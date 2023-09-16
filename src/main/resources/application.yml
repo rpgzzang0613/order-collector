@@ -1,0 +1,49 @@
+#common config
+spring:
+  profiles:
+    active: local
+#    active: real
+    group:
+      local: local, local_secret
+      real: real, real_secret
+  jpa:
+    show-sql: true
+    database: postgresql
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+---
+
+# local config
+spring:
+  config:
+    activate:
+      on-profile: local
+
+server:
+  port: 3030
+
+logging:
+  level:
+    root: info
+
+---
+
+# real config
+spring:
+  config:
+    activate:
+      on-profile: real
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: warn
