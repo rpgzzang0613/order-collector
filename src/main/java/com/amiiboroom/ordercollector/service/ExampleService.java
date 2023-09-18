@@ -8,14 +8,12 @@ import com.amiiboroom.ordercollector.entity.Example;
 import com.amiiboroom.ordercollector.util.enums.OsType;
 import com.amiiboroom.ordercollector.util.mapper.ExampleMapper;
 import com.amiiboroom.ordercollector.repository.ExampleRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.http.HttpStatus;
@@ -122,7 +120,7 @@ public class ExampleService {
 
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--start-maximized");          // 최대 창크기로 실행 (안보일때도 적용됨)
-//            options.addArguments("--headless=new");           // 안보이고 백그라운드에서 동작하게 설정
+            options.addArguments("--headless=new");           // 안보이고 백그라운드에서 동작하게 설정
             options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-logging"));  // 불필요 로그 제거
 
             WebDriverManager.chromedriver().setup();            // 크롬드라이버 버전 체크 및 매칭
@@ -132,8 +130,12 @@ public class ExampleService {
             driver.get("https://new-m.pay.naver.com/pcpay?serviceGroup=SHOPPING&page=1");
             Thread.sleep(1000);
 
-            // 네이버 로그인 뚫는 방법 찾아야함..
-            inputAccountText(driver, id, pw);
+            JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+
+            jsExecutor.executeScript(String.format("document.getElementById('id').value = '%s'", id));
+            Thread.sleep(2203);
+            jsExecutor.executeScript(String.format("document.getElementById('pw').value = '%s'", pw));
+            Thread.sleep(2725);
 
             driver.findElement(By.cssSelector("#pw")).sendKeys(Keys.ENTER);
 
@@ -178,7 +180,7 @@ public class ExampleService {
         return resultMap;
     }
 
-    private HashMap<String, Object> getProductListOnePage(WebDriver driver , int page) {
+    private HashMap<String, Object> getProductListOnePage(WebDriver driver , int page) throws JsonProcessingException {
         log.info(page + "번째 페이지..");
 
         HashMap<String, Object> resultMap = new HashMap<>();
@@ -190,7 +192,7 @@ public class ExampleService {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        HashMap<String, Object> jsonMap = objectMapper.convertValue(jsonStr, HashMap.class);
+        HashMap<String, Object> jsonMap = objectMapper.readValue(jsonStr, HashMap.class);
 
         if(jsonMap.get("code") == null) {
             log.error("JSON 조회 실패1 - code가 없음");
@@ -241,7 +243,7 @@ public class ExampleService {
             itemList = null;
         }
 
-        if(itemList == null || !itemList.isEmpty()) {
+        if(itemList == null || itemList.isEmpty()) {
             String msg = "items가 없음";
             log.error(msg);
             resultMap.put("result", "failure");
@@ -299,29 +301,6 @@ public class ExampleService {
         resultMap.put("product_list", resultList);
 
         return resultMap;
-    }
-
-    private void inputAccountText(WebDriver driver, String id, String pw) throws Exception {
-        Thread.sleep(1000);
-
-        WebElement elem = driver.findElement(By.cssSelector("#id"));
-
-        elem.click();
-
-        for(char c : id.toCharArray()) {
-            elem.sendKeys(String.valueOf(c));
-            Thread.sleep(200);
-        }
-
-        Keys modifierKey = osCheckUtil.getOsType() == OsType.MAC ? Keys.COMMAND : Keys.CONTROL;
-
-        elem.sendKeys(Keys.chord(modifierKey , "a"));
-        Thread.sleep(750);
-        elem.sendKeys(Keys.chord(modifierKey , "x"));
-        Thread.sleep(820);
-        elem.sendKeys(Keys.chord(modifierKey , "v"));
-
-        Thread.sleep(450);
     }
 
 }
