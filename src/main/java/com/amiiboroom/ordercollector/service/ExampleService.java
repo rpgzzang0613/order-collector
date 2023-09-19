@@ -29,6 +29,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -120,7 +121,7 @@ public class ExampleService {
 
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--start-maximized");          // 최대 창크기로 실행 (안보일때도 적용됨)
-            options.addArguments("--headless=new");           // 안보이고 백그라운드에서 동작하게 설정
+            options.addArguments("--headless=new");          // 안보이고 백그라운드에서 동작하게 설정
             options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-logging"));  // 불필요 로그 제거
 
             WebDriverManager.chromedriver().setup();            // 크롬드라이버 버전 체크 및 매칭
@@ -162,6 +163,7 @@ public class ExampleService {
                 page++;
             }
 
+            resultMap.put("result", resultList);
         }catch(Exception e) {
             // 로그 저장 후 API 결과 실패로 리턴
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -184,7 +186,6 @@ public class ExampleService {
         log.info(page + "번째 페이지..");
 
         HashMap<String, Object> resultMap = new HashMap<>();
-        List<HashMap<String, Object>> resultList = new ArrayList<>();
 
         driver.get("https://new-m.pay.naver.com/api/timeline/v2/search?serviceGroup=SHOPPING&from=PC_PAYMENT_HISTORY&page=" + page);
 
@@ -251,54 +252,11 @@ public class ExampleService {
             return resultMap;
         }
 
-        for(HashMap<String, Object> item : itemList) {
-            if("ORDER".equals(item.get("serviceType"))) {
+        List<HashMap<String, Object>> resultList = itemList.stream()
+                .filter(item -> "ORDER".equals(item.get("serviceType")))
+                .collect(Collectors.toList());
 
-                String status = Optional.ofNullable(item.get("status"))
-                        .map(o -> (HashMap<String, Object>) o)
-                        .map(statusMap -> statusMap.get("text").toString())
-                        .orElse("-");
-
-                String merchantName = Optional.ofNullable(item.get("merchantName"))
-                        .map(o -> o.toString())
-                        .orElse("-");
-
-                String productName = Optional.ofNullable(item.get("product"))
-                        .map(o -> (HashMap<String, Object>) o)
-                        .map(productMap -> productMap.get("name").toString())
-                        .orElse("-");
-
-                String price = Optional.ofNullable(item.get("product"))
-                        .map(o -> (HashMap<String, Object>) o)
-                        .map(productMap -> productMap.get("price").toString())
-                        .orElse("-");
-
-                String message = Optional.ofNullable(item.get("message"))
-                        .map(o -> o.toString())
-                        .orElse("-");
-
-                String productDetailUrl = Optional.ofNullable(item.get("productDetailUrl"))
-                        .map(o -> o.toString())
-                        .orElse("-");
-
-                String orderDetailUrl = Optional.ofNullable(item.get("orderDetailUrl"))
-                        .map(o -> o.toString())
-                        .orElse("-");
-
-                HashMap<String, Object> tmpMap = new HashMap<>();
-                tmpMap.put("status", status);
-                tmpMap.put("merchant_name", merchantName);
-                tmpMap.put("product_name", productName);
-                tmpMap.put("price", price);
-                tmpMap.put("message", message);
-                tmpMap.put("product_detail_url", productDetailUrl);
-                tmpMap.put("order_detail_url", orderDetailUrl);
-
-                resultList.add(tmpMap);
-            }
-        }
-
-        resultMap.put("product_list", resultList);
+        resultMap.put("list", resultList);
 
         return resultMap;
     }
