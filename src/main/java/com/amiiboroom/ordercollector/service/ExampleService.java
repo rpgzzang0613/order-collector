@@ -1,11 +1,9 @@
 package com.amiiboroom.ordercollector.service;
 
-import com.amiiboroom.ordercollector.util.OsCheckUtil;
 import com.amiiboroom.ordercollector.util.enums.ApiMessage;
 import com.amiiboroom.ordercollector.dto.ApiResult;
 import com.amiiboroom.ordercollector.dto.example.ResponseExampleDTO;
 import com.amiiboroom.ordercollector.entity.Example;
-import com.amiiboroom.ordercollector.util.enums.OsType;
 import com.amiiboroom.ordercollector.util.mapper.ExampleMapper;
 import com.amiiboroom.ordercollector.repository.ExampleRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,9 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.awt.*;
-import java.awt.datatransfer.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.Duration;
@@ -38,7 +33,6 @@ public class ExampleService {
 
     private final ExampleRepository exampleRepository;
     private final ExampleMapper exampleMapper;
-    private final OsCheckUtil osCheckUtil;
 
     public ResponseEntity<ApiResult> findAllExample() {
         ApiResult apiResult;
@@ -148,7 +142,7 @@ public class ExampleService {
             List<HashMap<String, Object>> resultList = new ArrayList<>();
 
             while(true) {
-                HashMap<String, Object> tmpMap = getProductListOnePage(driver, page);
+                HashMap<String, Object> tmpMap = getNaverProductListOnePage(driver, page);
 
                 if(page == 1) {
                     totalPage = Integer.parseInt(tmpMap.get("totalPage").toString());
@@ -182,7 +176,7 @@ public class ExampleService {
         return resultMap;
     }
 
-    private HashMap<String, Object> getProductListOnePage(WebDriver driver , int page) throws JsonProcessingException {
+    private HashMap<String, Object> getNaverProductListOnePage(WebDriver driver , int page) throws JsonProcessingException {
         log.info(page + "번째 페이지..");
 
         HashMap<String, Object> resultMap = new HashMap<>();
