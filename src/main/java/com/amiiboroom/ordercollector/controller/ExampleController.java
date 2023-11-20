@@ -5,9 +5,11 @@ import com.amiiboroom.ordercollector.service.ExampleService;
 import com.amiiboroom.ordercollector.util.OsCheckUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
@@ -18,6 +20,7 @@ public class ExampleController {
 
     private final ExampleService exampleService;
     private final OsCheckUtil osCheckUtil;
+    private final StandardPBEStringEncryptor encryptor;
 
     @GetMapping("/examples")
     public ResponseEntity<ApiResult> findAllExample() {
@@ -41,6 +44,21 @@ public class ExampleController {
         }
 
         return example_path;
+    }
+
+    @GetMapping("/encrypt-test")
+    public HashMap<String, Object> test() {
+
+        String original = "String Encrypt Test";
+        String encStr = encryptor.encrypt(original);
+        String decStr = encryptor.decrypt(encStr);
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("original", original);
+        map.put("encrypted", encStr);
+        map.put("decrypted", decStr);
+
+        return map;
     }
 
     @GetMapping("/naver-orders")

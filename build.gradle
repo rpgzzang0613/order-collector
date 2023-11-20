@@ -29,6 +29,9 @@ dependencies {
     implementation 'org.seleniumhq.selenium:selenium-java:4.12.1'
     implementation 'io.github.bonigarcia:webdrivermanager:5.5.3'
 
+    // https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 

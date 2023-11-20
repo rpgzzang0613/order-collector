@@ -20,6 +20,14 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
 
+# Settings to use encryption in yml files
+#jasypt:
+#  encryptor:
+#    bean: jasyptStringEncryptor
+#    property:
+#      prefix: Enc(
+#      suffix: )
+
 ---
 
 # local config
