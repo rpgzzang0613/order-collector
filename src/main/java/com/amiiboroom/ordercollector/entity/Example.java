@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
  *   주석예시처럼 테이블명을 따로 지정해줄 수 있음
  *
  * - 보통은 DB컬럼이 snake_case 라면 Entity의 변수명은 camelCase로 선언해야 제대로 매핑되나,
- *   주석예시처럼 컬럼명을 따로 지정해줄 수 있음
+ *   주석예시처럼 컬럼명을 따로 지정해줄 수도 있고,
+ *   application.yml 파일에서 JPA naming 설정을 PhysicalNamingStrategy로 지정하여 테이블 컬럼과 완전 동일하게 매핑시킬수도 있음
  */
 @Entity
 @Getter
@@ -36,7 +37,7 @@ public class Example {
     private String name;
 
     @CreationTimestamp
-    private LocalDateTime regiDate;
+    private LocalDateTime regi_date;
 
     @Builder
     public Example(String name) {
