@@ -15,19 +15,19 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/examples")
 public class ExampleController {
 
     private final ExampleService exampleService;
     private final OsCheckUtil osCheckUtil;
     private final StandardPBEStringEncryptor encryptor;
 
-    @GetMapping("/examples")
+    @GetMapping("")
     public ResponseEntity<ApiResult> findAllExample() {
         return exampleService.findAllExample();
     }
 
-    @GetMapping("/examples/{idx}")
+    @GetMapping("/{idx}")
     public ResponseEntity<ApiResult> findOneExample(@PathVariable String idx) {
         return exampleService.findOneExample(idx);
     }
