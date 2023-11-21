@@ -255,4 +255,9 @@ public class ExampleService {
         return resultMap;
     }
 
+    public ResponseEntity<ApiResult> doException() {
+        int a = 3 / 0;
+
+        return null;
+    }
 }

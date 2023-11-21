@@ -61,6 +61,14 @@ public class ExampleController {
         return map;
     }
 
+    @GetMapping("/exception-test")
+    public ResponseEntity<ApiResult> testException() {
+        ResponseEntity<ApiResult> result = exampleService.doException();
+
+        return result;
+    }
+
+
     @GetMapping("/naver-orders")
     public ConcurrentHashMap<String, Object> getNaverOrderListFromWeb(@RequestParam String id, @RequestParam String pw) {
         return exampleService.getNaverOrderListFromWeb(id, pw);
