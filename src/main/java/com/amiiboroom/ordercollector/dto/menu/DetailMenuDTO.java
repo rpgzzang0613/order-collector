@@ -1,4 +1,4 @@
-package com.amiiboroom.ordercollector.dto.user;
+package com.amiiboroom.ordercollector.dto.menu;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
-public class MenuDTO {
+public class DetailMenuDTO {
 
-    String name;
-    String url;
+    private String name;
+    private String url;
 
 }

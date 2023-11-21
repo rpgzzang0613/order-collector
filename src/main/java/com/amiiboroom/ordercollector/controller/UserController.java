@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/menus")
     public ResponseEntity<ApiResult> getUserMenuByRole(HttpSession session) {
