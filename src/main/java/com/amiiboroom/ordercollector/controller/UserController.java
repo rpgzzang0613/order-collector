@@ -1,14 +1,13 @@
 package com.amiiboroom.ordercollector.controller;
 
 import com.amiiboroom.ordercollector.dto.ApiResult;
+import com.amiiboroom.ordercollector.dto.users.UserSignupDTO;
 import com.amiiboroom.ordercollector.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +20,11 @@ public class UserController {
     @GetMapping("/login")
     public String login() {
         return "LOGIN";
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResult> signup(UserSignupDTO userDTO) {
+        return userService.signup(userDTO);
     }
 
     @GetMapping("/menus")

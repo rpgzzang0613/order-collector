@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,6 +38,16 @@ public class Users {
     @CreationTimestamp
     private LocalDateTime regi_date;
 
-
+    @Builder
+    public Users(String id, String pw, String email, String name, String status, String role, LocalDateTime last_login_date, String last_login_ip) {
+        this.id = id;
+        this.pw = pw;
+        this.email = email;
+        this.name = name;
+        this.status = status;
+        this.role = role;
+        this.last_login_date = last_login_date;
+        this.last_login_ip = last_login_ip;
+    }
 
 }
