@@ -1,7 +1,7 @@
 package com.amiiboroom.ordercollector.config;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
-import org.jasypt.salt.RandomSaltGenerator;
+import org.jasypt.salt.StringFixedSaltGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,11 +16,14 @@ public class JasyptConfig {
     @Value("${jasypt.encryptor.password}")
     private String password;
 
+    @Value("${jasypt.encryptor.salt}")
+    private String salt;
+
     @Bean
     public StandardPBEStringEncryptor jasyptStringEncryptor() {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         encryptor.setPassword(password);
-        encryptor.setSaltGenerator(new RandomSaltGenerator());
+        encryptor.setSaltGenerator(new StringFixedSaltGenerator(salt));
 
         return encryptor;
     }
