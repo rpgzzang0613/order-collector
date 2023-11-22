@@ -30,6 +30,30 @@ public class UserService {
     private final StandardPBEStringEncryptor dataEncryptor;     // 양방향
     private final PasswordEncoder passwordEncoder;              // 단방향
 
+    public ResponseEntity<ApiResult> signup(UserSignupDTO userSignupDTO) {
+        UserSignupDTO encodedDTO = encodeUserSignupDto(userSignupDTO);
+        Users entity = userMapper.userSignupDtoToEntity(encodedDTO);
+        Users savedEntity = userRepository.save(entity);
+
+        ApiResult apiResult = new ApiResult(ApiMessage.DATA_SAVE_SUCCESS, null);
+
+        return ResponseEntity.ok(apiResult);
+    }
+
+    public ResponseEntity<ApiResult> checkUserExists(String id) {
+        ApiResult apiResult;
+
+        boolean exists = userRepository.existsUsersById(dataEncryptor.encrypt(id));
+
+        if(exists) {
+            apiResult = new ApiResult(ApiMessage.SUCCESS, null);
+        }else {
+            apiResult = new ApiResult(ApiMessage.DATA_NOT_FOUND, null);
+        }
+
+        return ResponseEntity.ok(apiResult);
+    }
+
     public ResponseEntity<ApiResult> getUserMenuByRole(String role) {
         HashMap<String, MenuDTO> menuMap;
 
@@ -39,19 +63,7 @@ public class UserService {
         return ResponseEntity.ok(apiResult);
     }
 
-    public ResponseEntity<ApiResult> signup(UserSignupDTO userSignupDTO) {
-        UserSignupDTO encodedDTO = encodeUserSignupDto(userSignupDTO);
-        Users entity = userMapper.userSignupDtoToEntity(encodedDTO);
-        Users savedEntity = userRepository.save(entity);
-
-        ApiResult apiResult = new ApiResult(ApiMessage.SUCCESS, savedEntity);
-
-        return ResponseEntity.ok(apiResult);
-    }
-
-    /**
-     * 아래부턴 클래스 내부 사용 메소드
-     */
+    /** 아래부턴 클래스 내부 사용 메소드 **/
 
     // 추후 하드코딩 걷어내기
     private HashMap<String, MenuDTO> createMenu(String role) {

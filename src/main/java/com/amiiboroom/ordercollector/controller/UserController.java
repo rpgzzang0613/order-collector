@@ -23,8 +23,13 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResult> signup(UserSignupDTO userDTO) {
-        return userService.signup(userDTO);
+    public ResponseEntity<ApiResult> signup(UserSignupDTO userSignupDTO) {
+        return userService.signup(userSignupDTO);
+    }
+
+    @GetMapping("/signup/exists")
+    public ResponseEntity<ApiResult> checkUserExists(String id) {
+        return userService.checkUserExists(id);
     }
 
     @GetMapping("/menus")
