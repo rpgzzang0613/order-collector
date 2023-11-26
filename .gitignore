@@ -38,4 +38,5 @@ out/
 
 ### Secret File ###
 application-local_secret.yml
+application-test_secret.yml
 application-real_secret.yml

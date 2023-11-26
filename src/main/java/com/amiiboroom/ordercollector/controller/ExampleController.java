@@ -22,16 +22,6 @@ public class ExampleController {
     private final OsCheckUtil osCheckUtil;
     private final StandardPBEStringEncryptor encryptor;
 
-    @GetMapping("")
-    public ResponseEntity<ApiResult> findAllExample() {
-        return exampleService.findAllExample();
-    }
-
-    @GetMapping("/{idx}")
-    public ResponseEntity<ApiResult> findOneExample(@PathVariable String idx) {
-        return exampleService.findOneExample(idx);
-    }
-
     @GetMapping("/os-type")
     public String getOsType() {
         String example_path = "";

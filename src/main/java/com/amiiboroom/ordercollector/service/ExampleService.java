@@ -1,11 +1,6 @@
 package com.amiiboroom.ordercollector.service;
 
-import com.amiiboroom.ordercollector.util.enums.ApiMessage;
 import com.amiiboroom.ordercollector.dto.ApiResult;
-import com.amiiboroom.ordercollector.dto.example.ResponseExampleDTO;
-import com.amiiboroom.ordercollector.entity.Example;
-import com.amiiboroom.ordercollector.util.mapper.ExampleMapper;
-import com.amiiboroom.ordercollector.repository.ExampleRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -14,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -30,83 +24,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class ExampleService {
-
-    private final ExampleRepository exampleRepository;
-    private final ExampleMapper exampleMapper;
-
-    public ResponseEntity<ApiResult> findAllExample() {
-        ApiResult apiResult;
-        List<ResponseExampleDTO> responseExampleDTOList;
-
-        try {
-
-            // DB 조회
-            List<Example> exampleList = exampleRepository.findAll();
-
-            // Entity를 DTO로 변환
-            if(!exampleList.isEmpty()) {
-                responseExampleDTOList = exampleList.stream()
-                        .map(exampleMapper::entityToDto)
-                        .toList();
-
-                apiResult = new ApiResult(ApiMessage.SUCCESS, responseExampleDTOList);
-            }else {
-                apiResult = new ApiResult(ApiMessage.DATA_NOT_FOUND, Collections.emptyList());
-            }
-
-        }catch(Exception e) {
-            // 로그 저장 후 API 결과 실패로 리턴
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            PrintStream printStream = new PrintStream(out);
-            e.printStackTrace(printStream);
-
-            String stackTraceStr = out.toString();
-
-            log.error("----- Exception StackTrace -----\n{}", stackTraceStr);
-
-            apiResult = new ApiResult(ApiMessage.FAILED, null);
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResult);
-        }
-
-        return ResponseEntity.ok(apiResult);
-    }
-
-    public ResponseEntity<ApiResult> findOneExample(String idx) {
-        ApiResult apiResult;
-        ResponseExampleDTO responseExampleDTO;
-
-        try {
-
-            // DB 조회
-            Example example = exampleRepository.findById(Long.parseLong(idx)).orElse(null);
-
-            // Entity를 DTO로 변환
-            if(example != null) {
-                responseExampleDTO = exampleMapper.entityToDto(example);
-
-                apiResult = new ApiResult(ApiMessage.SUCCESS, responseExampleDTO);
-            }else {
-                apiResult = new ApiResult(ApiMessage.DATA_NOT_FOUND, null);
-            }
-
-        }catch(Exception e) {
-            // 로그 저장 후 API 결과 실패로 리턴
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            PrintStream printStream = new PrintStream(out);
-            e.printStackTrace(printStream);
-
-            String stackTraceStr = out.toString();
-
-            log.error("----- Exception StackTrace -----\n{}", stackTraceStr);
-
-            apiResult = new ApiResult(ApiMessage.FAILED, null);
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResult);
-        }
-
-        return ResponseEntity.ok(apiResult);
-    }
 
     public ConcurrentHashMap<String, Object> getNaverOrderListFromWeb(String id, String pw) {
         ConcurrentHashMap<String, Object> resultMap = new ConcurrentHashMap<>();

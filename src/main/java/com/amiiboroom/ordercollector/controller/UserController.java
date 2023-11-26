@@ -1,13 +1,14 @@
 package com.amiiboroom.ordercollector.controller;
 
 import com.amiiboroom.ordercollector.dto.ApiResult;
-import com.amiiboroom.ordercollector.dto.users.UserSignupDTO;
 import com.amiiboroom.ordercollector.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,25 +18,22 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/login")
-    public String login() {
-        return "LOGIN";
-    }
-
     @PostMapping("/signup")
-    public ResponseEntity<ApiResult> signup(UserSignupDTO userSignupDTO) {
-        return userService.signup(userSignupDTO);
+    public ResponseEntity<ApiResult> signup(@RequestParam HashMap<String, Object> requestMap) {
+        return userService.signup(requestMap);
     }
 
-    @GetMapping("/signup/exists")
-    public ResponseEntity<ApiResult> checkUserExists(String id) {
-        return userService.checkUserExists(id);
+    @GetMapping("/login")
+    public ResponseEntity<ApiResult> login(@RequestParam HashMap<String, Object> requestMap) {
+        return userService.login(requestMap);
     }
 
     @GetMapping("/menus")
     public ResponseEntity<ApiResult> getUserMenuByRole(HttpSession session) {
-        String role = (String) session.getAttribute("role");
-        return userService.getUserMenuByRole(role);
+        HashMap<String, Object> userMap = (HashMap<String, Object>) session.getAttribute("user");
+
+        String permission = (String) userMap.get("permission");
+        return userService.getUserMenuByRole(permission);
     }
 
 }

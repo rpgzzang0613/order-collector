@@ -2,23 +2,16 @@
 spring:
   profiles:
     active: local
+#    active: test
 #    active: real
     group:
       local: local, local_secret
+      test: test, test_secret
       real: real, real_secret
-  jpa:
-    show-sql: true
-    database: postgresql
-    hibernate:
-      ddl-auto: validate
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    properties:
-      hibernate:
-        format_sql: true
-        use_sql_comments: true
   datasource:
     driver-class-name: org.postgresql.Driver
+mybatis:
+  mapper-locations: classpath:/queries/*.xml
 
 # Settings to use encryption in yml files
 #jasypt:
@@ -35,6 +28,21 @@ spring:
   config:
     activate:
       on-profile: local
+
+server:
+  port: 3030
+
+logging:
+  level:
+    root: info
+
+---
+
+# test config
+spring:
+  config:
+    activate:
+      on-profile: test
 
 server:
   port: 3030
