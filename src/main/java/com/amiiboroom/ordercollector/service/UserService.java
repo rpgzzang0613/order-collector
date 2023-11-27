@@ -69,11 +69,18 @@ public class UserService {
     private HashMap<String, Object> encodeUserInfo(HashMap<String, Object> map) {
         HashMap<String, Object> encodedMap = new HashMap<>();
 
-        encodedMap.put("user_id", dataEncryptor.encrypt(map.get("user_id").toString()));
-        encodedMap.put("user_name", dataEncryptor.encrypt(map.get("user_name").toString()));
-        encodedMap.put("email", dataEncryptor.encrypt(map.get("email").toString()));
-
-        encodedMap.put("user_pw", passwordEncoder.encode(map.get("user_pw").toString()));
+        if(map.containsKey("user_id")) {
+            encodedMap.put("user_id", dataEncryptor.encrypt(map.get("user_id").toString()));
+        }
+        if(map.containsKey("user_name")) {
+            encodedMap.put("user_name", dataEncryptor.encrypt(map.get("user_name").toString()));
+        }
+        if(map.containsKey("email")) {
+            encodedMap.put("email", dataEncryptor.encrypt(map.get("email").toString()));
+        }
+        if(map.containsKey("user_pw")) {
+            encodedMap.put("user_pw", passwordEncoder.encode(map.get("user_pw").toString()));
+        }
 
         return encodedMap;
     }
@@ -81,9 +88,15 @@ public class UserService {
     private HashMap<String, Object> decodeUserInfo(HashMap<String, Object> map) {
         HashMap<String, Object> decodedMap = new HashMap<>();
 
-        decodedMap.put("user_id", dataEncryptor.decrypt(map.get("user_id").toString()));
-        decodedMap.put("user_name", dataEncryptor.decrypt(map.get("user_name").toString()));
-        decodedMap.put("email", dataEncryptor.decrypt(map.get("email").toString()));
+        if(map.containsKey("user_id")) {
+            decodedMap.put("user_id", dataEncryptor.encrypt(map.get("user_id").toString()));
+        }
+        if(map.containsKey("user_name")) {
+            decodedMap.put("user_name", dataEncryptor.encrypt(map.get("user_name").toString()));
+        }
+        if(map.containsKey("email")) {
+            decodedMap.put("email", dataEncryptor.encrypt(map.get("email").toString()));
+        }
 
         return decodedMap;
     }
