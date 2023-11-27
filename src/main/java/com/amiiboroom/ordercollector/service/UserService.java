@@ -67,7 +67,7 @@ public class UserService {
 
     /** 아래부턴 클래스 내부 사용 메소드 **/
     private HashMap<String, Object> encodeUserInfo(HashMap<String, Object> map) {
-        HashMap<String, Object> encodedMap = new HashMap<>();
+        HashMap<String, Object> encodedMap = new HashMap<>(map);
 
         if(map.containsKey("user_id")) {
             encodedMap.put("user_id", dataEncryptor.encrypt(map.get("user_id").toString()));
@@ -86,7 +86,7 @@ public class UserService {
     }
 
     private HashMap<String, Object> decodeUserInfo(HashMap<String, Object> map) {
-        HashMap<String, Object> decodedMap = new HashMap<>();
+        HashMap<String, Object> decodedMap = new HashMap<>(map);
 
         if(map.containsKey("user_id")) {
             decodedMap.put("user_id", dataEncryptor.encrypt(map.get("user_id").toString()));
