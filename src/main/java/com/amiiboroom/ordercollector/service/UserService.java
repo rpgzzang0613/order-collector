@@ -68,35 +68,24 @@ public class UserService {
     /** 아래부턴 클래스 내부 사용 메소드 **/
     private HashMap<String, Object> encodeUserInfo(HashMap<String, Object> map) {
         HashMap<String, Object> encodedMap = new HashMap<>(map);
-
-        if(map.containsKey("user_id")) {
-            encodedMap.put("user_id", dataEncryptor.encrypt(map.get("user_id").toString()));
-        }
-        if(map.containsKey("user_name")) {
-            encodedMap.put("user_name", dataEncryptor.encrypt(map.get("user_name").toString()));
-        }
-        if(map.containsKey("email")) {
-            encodedMap.put("email", dataEncryptor.encrypt(map.get("email").toString()));
-        }
-        if(map.containsKey("user_pw")) {
-            encodedMap.put("user_pw", passwordEncoder.encode(map.get("user_pw").toString()));
-        }
+        encodedMap.forEach((k, v) -> {
+            if("user_id".equals(k) || "user_name".equals(k) || "email".equals(k)) {
+                encodedMap.put(k, dataEncryptor.encrypt(v.toString()));
+            }else if("user_pw".equals(k)) {
+                encodedMap.put(k, passwordEncoder.encode(v.toString()));
+            }
+        });
 
         return encodedMap;
     }
 
     private HashMap<String, Object> decodeUserInfo(HashMap<String, Object> map) {
         HashMap<String, Object> decodedMap = new HashMap<>(map);
-
-        if(map.containsKey("user_id")) {
-            decodedMap.put("user_id", dataEncryptor.encrypt(map.get("user_id").toString()));
-        }
-        if(map.containsKey("user_name")) {
-            decodedMap.put("user_name", dataEncryptor.encrypt(map.get("user_name").toString()));
-        }
-        if(map.containsKey("email")) {
-            decodedMap.put("email", dataEncryptor.encrypt(map.get("email").toString()));
-        }
+        decodedMap.forEach((k, v) -> {
+            if("user_id".equals(k) || "user_name".equals(k) || "email".equals(k)) {
+                decodedMap.put(k, dataEncryptor.decrypt(v.toString()));
+            }
+        });
 
         return decodedMap;
     }
