@@ -19,12 +19,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResult> signup(@RequestParam HashMap<String, Object> requestMap) {
+    public ResponseEntity<ApiResult> signup(@RequestBody HashMap<String, Object> requestMap) {
         return userService.signup(requestMap);
     }
 
     @GetMapping("/login")
-    public ResponseEntity<ApiResult> login(@RequestParam HashMap<String, Object> requestMap) {
+    public ResponseEntity<ApiResult> login(@RequestBody HashMap<String, Object> requestMap, HttpSession session) {
         return userService.login(requestMap);
     }
 
@@ -32,8 +32,7 @@ public class UserController {
     public ResponseEntity<ApiResult> getUserMenuByRole(HttpSession session) {
         HashMap<String, Object> userMap = (HashMap<String, Object>) session.getAttribute("user");
 
-        String permission = (String) userMap.get("permission");
-        return userService.getUserMenuByRole(permission);
+        return userService.getUserMenuByRole(userMap);
     }
 
 }

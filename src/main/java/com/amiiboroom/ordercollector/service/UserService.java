@@ -1,6 +1,7 @@
 package com.amiiboroom.ordercollector.service;
 
-import com.amiiboroom.ordercollector.dao.UserDao;
+import com.amiiboroom.ordercollector.dao.TADao;
+import com.amiiboroom.ordercollector.dao.TBDao;
 import com.amiiboroom.ordercollector.dto.ApiResult;
 import com.amiiboroom.ordercollector.util.enums.ApiMessage;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +18,17 @@ import java.util.HashMap;
 @Slf4j
 public class UserService {
 
-    private final UserDao userDao;
+    private final TADao TADao;
+    private final TBDao TBDao;
     private final StandardPBEStringEncryptor dataEncryptor;     // 양방향
     private final PasswordEncoder passwordEncoder;              // 단방향
 
     public ResponseEntity<ApiResult> signup(HashMap<String, Object> requestMap) {
         ApiResult apiResult;
 
-//        int res = userDao.I01(encodeUserInfo(requestMap));
-        int res = userDao.I01(requestMap);
+//        int res = TADao.TAI01(encodeUserInfo(requestMap));
+        HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
+        int res = TADao.TAI01(changedMap);
 
         if(res > 0) {
             apiResult = new ApiResult(ApiMessage.DATA_SAVE_SUCCESS, null);
@@ -39,7 +42,7 @@ public class UserService {
     public ResponseEntity<ApiResult> login(HashMap<String, Object> requestMap) {
         ApiResult apiResult;
 
-        HashMap<String, Object> resultMap = userDao.S01(requestMap);
+        HashMap<String, Object> resultMap = TADao.TAS02(requestMap);
 
         if(resultMap != null && !resultMap.isEmpty()) {
 //            apiResult = new ApiResult(ApiMessage.SUCCESS, decodeUserInfo(resultMap));
@@ -51,10 +54,10 @@ public class UserService {
         return ResponseEntity.ok(apiResult);
     }
 
-    public ResponseEntity<ApiResult> getUserMenuByRole(String permission) {
+    public ResponseEntity<ApiResult> getUserMenuByRole(HashMap<String, Object> requestMap) {
         ApiResult apiResult;
 
-        HashMap<String, Object> menuMap = userDao.S02(permission);
+        HashMap<String, Object> menuMap = TBDao.TBS01(requestMap);
 
         if(menuMap != null && !menuMap.isEmpty()) {
             apiResult = new ApiResult(ApiMessage.SUCCESS, menuMap);
@@ -66,6 +69,13 @@ public class UserService {
     }
 
     /** 아래부턴 클래스 내부 사용 메소드 **/
+    private HashMap<String, Object> changeKeyToUppercase(HashMap<String, Object> map) {
+        HashMap<String, Object> changedMap = new HashMap<>();
+        map.forEach((k, v) -> changedMap.put(k.toUpperCase(), v));
+
+        return changedMap;
+    }
+
     private HashMap<String, Object> encodeUserInfo(HashMap<String, Object> map) {
         HashMap<String, Object> encodedMap = new HashMap<>(map);
         encodedMap.forEach((k, v) -> {
