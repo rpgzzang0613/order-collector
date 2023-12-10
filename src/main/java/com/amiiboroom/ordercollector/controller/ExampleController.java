@@ -1,6 +1,6 @@
 package com.amiiboroom.ordercollector.controller;
 
-import com.amiiboroom.ordercollector.dto.ApiResult;
+import com.amiiboroom.ordercollector.dto.BackendResult;
 import com.amiiboroom.ordercollector.service.ExampleService;
 import com.amiiboroom.ordercollector.util.OsCheckUtil;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +52,8 @@ public class ExampleController {
     }
 
     @GetMapping("/exception-test")
-    public ResponseEntity<ApiResult> testException() {
-        ResponseEntity<ApiResult> result = exampleService.doException();
+    public ResponseEntity<BackendResult> testException() {
+        ResponseEntity<BackendResult> result = exampleService.doException();
 
         return result;
     }

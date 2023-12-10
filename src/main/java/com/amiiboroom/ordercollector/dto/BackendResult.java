@@ -1,6 +1,6 @@
 package com.amiiboroom.ordercollector.dto;
 
-import com.amiiboroom.ordercollector.util.enums.ApiMessage;
+import com.amiiboroom.ordercollector.util.enums.BackendMessage;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,11 +11,11 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
-public class ApiResult {
-     private ApiMessage message;
+public class BackendResult {
+     private BackendMessage message;
      private Object data;
 
-     public ApiResult(ApiMessage message, Object data) {
+     public BackendResult(BackendMessage message, Object data) {
           this.message = message;
           this.data = data;
      }

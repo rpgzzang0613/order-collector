@@ -1,6 +1,6 @@
 package com.amiiboroom.ordercollector.service;
 
-import com.amiiboroom.ordercollector.dto.ApiResult;
+import com.amiiboroom.ordercollector.dto.BackendResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -172,7 +172,7 @@ public class ExampleService {
         return resultMap;
     }
 
-    public ResponseEntity<ApiResult> doException() {
+    public ResponseEntity<BackendResult> doException() {
         int a = 3 / 0;
 
         return null;
