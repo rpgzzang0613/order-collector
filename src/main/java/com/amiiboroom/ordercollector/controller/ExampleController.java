@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/examples")
+@RequestMapping("/examples")
 public class ExampleController {
 
     private final ExampleService exampleService;

@@ -13,7 +13,7 @@ public class IndexController {
     public String index(HttpSession session) {
         HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
         if(user == null || user.isEmpty()) {
-            return "redirect:/login";
+            return "redirect:/users/login";
         }
 
         return "index";
