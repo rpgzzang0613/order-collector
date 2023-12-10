@@ -10,6 +10,14 @@ spring:
       real: real, real_secret
   datasource:
     driver-class-name: org.postgresql.Driver
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+  thymeleaf:
+    cache: false
+
 mybatis:
   mapper-locations: classpath:/queries/*.xml
 
