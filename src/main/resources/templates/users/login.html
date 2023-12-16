@@ -4,8 +4,18 @@
 <!--<th:block layout:fragment="head"></th:block>-->
 <th:block layout:fragment="content">
     <main>
-        로그인 페이지
+      //  로그인 페이지
+        <div id="login_container">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="user_id">Username:</label>
+                <input type="text" id="user_id" name="user_id" required>
+                <label for="user_pw">Password:</label>
+                <input type="password" id="user_pw" name="user_pw" required>
+                <button type="button" id="btn_login">Login</button>
+            </form>
+        </div>
     </main>
 </th:block>
 </html>
-<script src="/js/user.js"></script>
+<script src="/js/login.js"></script>
