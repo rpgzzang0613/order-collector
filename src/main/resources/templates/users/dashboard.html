@@ -1,18 +1,12 @@
-<!-- dashboard/dashboard.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="/project/dashboard/dashboard.css">
-</head>
-<body>
-<div id="dashboard-container">
-    <h2>Dashboard</h2>
-    <!-- Dashboard content goes here -->
-</div>
-<script src="/project/dashboard/dashboard.js"></script>
-
-</body>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/full_layout}">
+<!-- 페이지마다 head meta를 다르게 적용할거면 아래 주석풀고 거기에 정의 -->
+<!--<th:block layout:fragment="head"></th:block> -->
+<th:block layout:fragment="content">
+    <main>
+        <!--        대시보드 페이지 -->
+        Dashboard
+    </main>
+</th:block>
 </html>
+<script src="/js/dashboard.js"></script>
