@@ -4,14 +4,14 @@
     <!-- 페이지마다 메타태그를 다르게하려면 main과 동일한 방식으로 수정 -->
     <!--    <th:block layout:fragment="head"></th:block>-->
 
-    <th:block th:include="/common/fragments/head_meta :: metaFragment"</th:block>
-    <th:block th:include="/common/fragments/head_css :: cssFragment"></th:block>
+    <th:block th:include="~{/common/fragments/head_meta :: metaFragment}"></th:block>
+    <th:block th:include="~{/common/fragments/head_css :: cssFragment}"></th:block>
 </head>
 <body>
-    <th:block th:include="/common/fragments/body_sidemenu :: sidemenuFragment"></th:block>
+    <th:block th:include="~{/common/fragments/body_sidemenu :: sidemenuFragment}"></th:block>
 
     <main layout:fragment="content"></main>
 
-    <th:block th:include="/common/fragments/body_scripts :: scriptFragment"></th:block>
+    <th:block th:include="~{/common/fragments/body_scripts :: scriptFragment}"></th:block>
 </body>
 </html>
