@@ -32,12 +32,6 @@ public class UserController {
 
     @GetMapping("/login")
     public String loginPage(HttpSession session) {
-        HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
-
-        if(user != null) {
-            return "redirect:/";
-        }
-
         return "users/login";
     }
 
@@ -46,10 +40,14 @@ public class UserController {
     public ResponseEntity<BackendResult> login(@RequestBody HashMap<String, Object> requestMap, HttpSession session) {
         ResponseEntity<BackendResult> response = userService.login(requestMap);
 
-        HashMap<String, Object> userMap = (HashMap<String, Object>) response.getBody().getData();
+        HashMap<String, Object> resMap = (HashMap<String, Object>) response.getBody().getData();
+        boolean login_res = false;
+        if(resMap != null && resMap.get("login_res") != null) {
+            login_res = (boolean) resMap.get("login_res");
+        }
 
-        if(userMap != null) {
-            session.setAttribute("user", userMap);
+        if(login_res) {
+            session.setAttribute("login_res", login_res);
         }
 
         return response;
@@ -60,6 +58,19 @@ public class UserController {
         HashMap<String, Object> userMap = (HashMap<String, Object>) session.getAttribute("user");
 
         return userService.getUserMenuByRole(userMap);
+    }
+
+    @GetMapping("/dashboard")
+    public String dashboardPage(HttpSession session) {
+        String urlPath = "users/dashboard";
+
+        Boolean isLoggedIn = (Boolean) session.getAttribute("login_res");
+
+        if(isLoggedIn == null || !isLoggedIn) {
+            urlPath = "redirect:/users/login";
+        }
+
+        return urlPath;
     }
 
 }

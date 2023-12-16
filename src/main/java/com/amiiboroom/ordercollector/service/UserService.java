@@ -42,7 +42,8 @@ public class UserService {
     public ResponseEntity<BackendResult> login(HashMap<String, Object> requestMap) {
         BackendResult backendResult;
 
-        HashMap<String, Object> resultMap = TADao.TAS02(requestMap);
+        HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
+        HashMap<String, Object> resultMap = TADao.TAS02(changedMap);
 
         if(resultMap != null && !resultMap.isEmpty()) {
 //            backendResult = new ApiResult(BackendMessage.SUCCESS, decodeUserInfo(resultMap));

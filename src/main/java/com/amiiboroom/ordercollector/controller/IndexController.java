@@ -11,12 +11,14 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(HttpSession session) {
-        HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
-        if(user == null || user.isEmpty()) {
-            return "redirect:/users/login";
+        String urlPath = "redirect:/users/login";
+
+        Boolean isLoggedIn = (Boolean) session.getAttribute("login_res");
+        if(isLoggedIn != null && isLoggedIn) {
+            return "redirect:/users/dashboard";
         }
 
-        return "index";
+        return urlPath;
     }
 
 }
