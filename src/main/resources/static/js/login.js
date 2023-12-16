@@ -1,60 +1,45 @@
-// login/login.js
+"use strict";
 
-document.addEventListener()
+document.addEventListener("DOMContentLoaded", () => {
+    const loginBtn = document.getElementById("btn_login");
 
+    loginBtn.addEventListener("click", async () => {
+        const id = document.getElementById("user_id").value;
+        const pw = document.getElementById("user_pw").value;
 
-function attemptLogin() {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-  
-    // Simple validation
-    if (username === 'your_username' && password === 'your_password') 
-    {
-      alert('Login successful!');
-      redirectToDashboard();
-      // Redirect to another page or perform additional actions
-    } else {
-      alert('Invalid username or password. Please try again.');
-    }
-  }
+        const result = await login(id, pw);
+        if(result.message !== "SUCCESS") {
+            alert("다시 시도해주세요");
+            return;
+        }
 
-  // 대시보드 페이지로 이동
-function redirectToDashboard() {
-    alert(' dashboard.');
-    /*dashboard 로 이동 */
-    window.location.href = "../dashboard/dashboard.html";
-  }
+        const data = result.data;
+        if(!data.login_res) {
+            alert("계정을 확인해주세요");
+            return;
+        }
 
+        location.href = "/users/dashboard";
+    });
 
+    const login = async (id, pw) => {
+        try {
+            const response = await fetch("/users/login", {
+                cache: "no-cache",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: id,
+                    user_pw: pw
+                })
+            });
 
-  document.addEventListener( "DOMContentLoaded", () =>{
+            return response.json();
 
-     const loginBtn = document.getElementById("btn_login") ;
-     loginBtn.addEventListener("click", async() =>{
-      const id = document.getElementById("user_id");
-      const pw = document.getElementById("user_pw");
-
-      await login(id,pw);
-     });
-
-      const login = async (id,pw)=> {
-          try {
-                  const response = await fetch("/users/login" , {
-                      cache:"no-cache",
-                      method:"POST",
-                      headers: {
-                          "Content-Type": "application/json"
-                      },
-                      body: JSON.stringify({
-                          id :id,
-                          pw: pw
-                      })
-                  });
-
-                  return response.json();
-
-          }catch(e){
-              console.error(e);
-          }
-      };
-  });
+        } catch (e) {
+            console.error(e);
+        }
+    };
+});
