@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -55,15 +56,15 @@ public class UserService {
         return ResponseEntity.ok(backendResult);
     }
 
-    public ResponseEntity<BackendResult> getUserMenuByRole(HashMap<String, Object> requestMap) {
+    public ResponseEntity<BackendResult> getUserMenusByRole(HashMap<String, Object> requestMap) {
         BackendResult backendResult;
 
-        HashMap<String, Object> menuMap = TBDao.TBS01(requestMap);
+        List<HashMap<String, Object>> menuList = TBDao.TBS01(requestMap);
 
-        if(menuMap != null && !menuMap.isEmpty()) {
-            backendResult = new BackendResult(BackendMessage.SUCCESS, menuMap);
+        if(menuList != null && !menuList.isEmpty()) {
+            backendResult = new BackendResult(BackendMessage.SUCCESS, menuList);
         }else {
-            backendResult = new BackendResult(BackendMessage.FAILED, menuMap);
+            backendResult = new BackendResult(BackendMessage.FAILED, menuList);
         }
 
         return ResponseEntity.ok(backendResult);

@@ -57,7 +57,7 @@ public class UserController {
     public ResponseEntity<BackendResult> getUserMenuByRole(HttpSession session) {
         HashMap<String, Object> userMap = (HashMap<String, Object>) session.getAttribute("user");
 
-        return userService.getUserMenuByRole(userMap);
+        return userService.getUserMenusByRole(userMap);
     }
 
     @GetMapping("/dashboard")
