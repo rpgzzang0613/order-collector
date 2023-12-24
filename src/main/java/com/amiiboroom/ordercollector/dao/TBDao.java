@@ -8,6 +8,16 @@ import java.util.List;
 @Mapper
 public interface TBDao {
 
+    /** INSERT **/
+
+
+    /** UPDATE **/
+
+
+    /** DELETE **/
+
+
+    /** SELECT **/
     List<HashMap<String, Object>> TBS01(HashMap<String, Object> requestMap);
 
 }
