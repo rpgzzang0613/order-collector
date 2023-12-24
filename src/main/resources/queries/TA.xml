@@ -4,123 +4,217 @@
 <!-- 로그인 및 로그인 이전에 할 수 있는 동작(회원가입, 비밀번호 찾기 등) 관련 쿼리 -->
 <mapper namespace="com.amiiboroom.ordercollector.dao.TADao">
 
-<insert id="TAI01">
---.TAI01 유저 회원가입
---^
-<![CDATA[
+    <insert id="TAI01" resultType="java.util.HashMap">
+        --.TAI01 유저 회원가입
+        --^
+        <![CDATA[
 
-INSERT INTO USERS
- (
-   USER_ID
-  ,USER_PW
-  ,EMAIL
-  ,USER_NAME
-  ,STATUS
-  ,USER_PER
-  ,INS_USER
-  ,UPD_USER
- )
-WITH TMP_ACC AS
- (
-  SELECT A.H_USER_ID   H_USER_ID
-        ,A.H_USER_PW   H_USER_PW
-        ,A.H_EMAIL     H_EMAIL
-        ,A.H_USER_NAME H_USER_NAME
-        ,A.H_USER_PER  H_USER_PER
-    FROM (
-          SELECT COALESCE(TRIM(#{USER_ID}  ), '') H_USER_ID
-                ,COALESCE(TRIM(#{USER_PW}  ), '') H_USER_PW
-                ,COALESCE(TRIM(#{EMAIL}    ), '') H_EMAIL
-                ,COALESCE(TRIM(#{USER_NAME}), '') H_USER_NAME
-                ,COALESCE(TRIM(#{USER_PER} ), '') H_USER_PER
---          SELECT COALESCE(TRIM('admin'), '') H_USER_ID
---                ,COALESCE(TRIM('admin'), '') H_USER_PW
---                ,COALESCE(TRIM('admin'), '') H_EMAIL
---                ,COALESCE(TRIM('admin'), '') H_USER_NAME
---                ,COALESCE(TRIM('admin'), '') H_USER_PER
-         ) A
- )
-,TMP_M AS
- (
-  SELECT A.H_USER_ID   H_USER_ID
-        ,A.H_USER_PW   H_USER_PW
-        ,A.H_EMAIL     H_EMAIL
-        ,A.H_USER_NAME H_USER_NAME
-        ,A.H_USER_PER  H_USER_PER
-    FROM TMP_ACC A
-        LEFT OUTER JOIN
-         USERS B
-        ON B.USER_ID = A.H_USER_ID
-   WHERE B.USER_ID IS NULL
- )
-SELECT A.H_USER_ID   USER_ID
-      ,A.H_USER_PW   USER_PW
-      ,A.H_EMAIL     EMAIL
-      ,A.H_USER_NAME USER_NAME
-      ,'P'           STATUS
-      ,H_USER_PER    USER_PER
-      ,'SYSTEM'      INS_USER
-      ,'SYSTEM'      UPD_USER
-  FROM TMP_M A
-  ;
+        INSERT INTO USERS
+         (
+           USER_ID
+          ,USER_PW
+          ,EMAIL
+          ,USER_NAME
+          ,USER_PER
+          ,STATUS
+          ,IS_PW_RESET
+          ,INS_USER
+          ,UPD_USER
+         )
+        WITH TMP_ACC AS
+         (
+          SELECT A.H_USER_ID   H_USER_ID
+                ,A.H_USER_PW   H_USER_PW
+                ,A.H_EMAIL     H_EMAIL
+                ,A.H_USER_NAME H_USER_NAME
+                ,A.H_USER_PER  H_USER_PER
+            FROM (
+                  SELECT COALESCE(TRIM(#{USER_ID}  ), '') H_USER_ID
+                        ,COALESCE(TRIM(#{USER_PW}  ), '') H_USER_PW
+                        ,COALESCE(TRIM(#{EMAIL}    ), '') H_EMAIL
+                        ,COALESCE(TRIM(#{USER_NAME}), '') H_USER_NAME
+                        ,COALESCE(TRIM(#{USER_PER} ), '') H_USER_PER
+        --          SELECT COALESCE(TRIM('admin'), '') H_USER_ID
+        --                ,COALESCE(TRIM('admin'), '') H_USER_PW
+        --                ,COALESCE(TRIM('admin'), '') H_EMAIL
+        --                ,COALESCE(TRIM('admin'), '') H_USER_NAME
+        --                ,COALESCE(TRIM('admin'), '') H_USER_PER
+                 ) A
+         )
+        ,TMP_M AS
+         (
+          SELECT A.H_USER_ID   H_USER_ID
+                ,A.H_USER_PW   H_USER_PW
+                ,A.H_EMAIL     H_EMAIL
+                ,A.H_USER_NAME H_USER_NAME
+                ,A.H_USER_PER  H_USER_PER
+            FROM TMP_ACC A
+                LEFT OUTER JOIN
+                 USERS B
+                ON B.USER_ID = A.H_USER_ID
+           WHERE B.USER_ID IS NULL
+         )
+        SELECT A.H_USER_ID   USER_ID
+              ,A.H_USER_PW   USER_PW
+              ,A.H_EMAIL     EMAIL
+              ,A.H_USER_NAME USER_NAME
+              ,H_USER_PER    USER_PER
+              ,'P'           STATUS
+              ,FALSE         IS_PW_RESET
+              ,'SYSTEM'      INS_USER
+              ,'SYSTEM'      UPD_USER
+          FROM TMP_M A
+          ;
 
-]]>
-</insert>
+        ]]>
+    </insert>
 
-<select id="TAS01" resultType="java.util.HashMap">
---.TAS01 ID 중복 체크
---^
-<![CDATA[
+    <select id="TAS01" resultType="java.util.HashMap">
+        --.TAS01 ID 중복 체크
+        --^
+        <![CDATA[
 
-WITH TMP_ACC AS
- (
-  SELECT A.H_USER_ID H_USER_ID
-    FROM (
-          SELECT COALESCE(TRIM(#{USER_ID}), '') H_USER_ID
---          SELECT COALESCE(TRIM('admin'), '') H_USER_ID
-         ) A
- )
-SELECT CASE
-         WHEN B.USER_ID IS NOT NULL THEN TRUE
-         ELSE                            FALSE
-       END                                     IS_DUPLICATE
-  FROM TMP_ACC A
-      LEFT OUTER JOIN
-       USERS B
-      ON B.USER_ID = A.H_USER_ID
-      ;
+        WITH TMP_ACC AS
+         (
+          SELECT A.H_USER_ID H_USER_ID
+            FROM (
+                  SELECT COALESCE(TRIM(#{USER_ID}), '') H_USER_ID
+        --          SELECT COALESCE(TRIM('admin'), '') H_USER_ID
+                 ) A
+         )
+        SELECT CASE
+                 WHEN B.USER_ID IS NOT NULL THEN TRUE
+                 ELSE                            FALSE
+               END                                     IS_DUPLICATE
+          FROM TMP_ACC A
+              LEFT OUTER JOIN
+               USERS B
+              ON B.USER_ID = A.H_USER_ID
+              ;
 
-]]>
-</select>
+        ]]>
+        </select>
 
-<select id="TAS02" resultType="java.util.HashMap">
---.TAS02 ID 로그인 체크
---^
-<![CDATA[
+        <select id="TAS02" resultType="java.util.HashMap">
+        --.TAS02 ID 로그인 체크
+        --^
+        <![CDATA[
 
-WITH TMP_ACC AS
- (
-  SELECT A.H_USER_ID H_USER_ID
-        ,A.H_USER_PW H_USER_PW
-    FROM (
-          SELECT COALESCE(TRIM(#{USER_ID}), '') H_USER_ID
-                ,COALESCE(TRIM(#{USER_PW}), '') H_USER_PW
---          SELECT COALESCE(TRIM('admin'), '') H_USER_ID
---                ,COALESCE(TRIM('admin'), '') H_USER_PW
-         ) A
- )
-SELECT CASE
-         WHEN B.USER_ID IS NOT NULL THEN TRUE
-         ELSE                            FALSE
-       END                                     LOGIN_RES
-  FROM TMP_ACC A
-      LEFT OUTER JOIN
-       USERS B
-      ON    B.USER_ID = A.H_USER_ID
-        AND B.USER_PW = A.H_USER_PW
-        AND B.STATUS  = 'A'
-        ;
+        WITH TMP_ACC AS
+         (
+          SELECT A.H_USER_ID H_USER_ID
+                ,A.H_USER_PW H_USER_PW
+            FROM (
+                  SELECT COALESCE(TRIM(#{USER_ID}), '') H_USER_ID
+                        ,COALESCE(TRIM(#{USER_PW}), '') H_USER_PW
+        --          SELECT COALESCE(TRIM('admin'), '') H_USER_ID
+        --                ,COALESCE(TRIM('admin'), '') H_USER_PW
+                 ) A
+         )
+        SELECT A.USER_ID
+              ,A.EMAIL
+              ,A.USER_NAME
+              ,A.STATUS
+              ,A.USER_PER
+              ,A.IS_PW_RESET
+          FROM USERS A
+              INNER JOIN
+               TMP_ACC Z
+              ON    Z.H_USER_ID = A.USER_ID
+                AND Z.H_USER_PW = A.USER_PW
+         WHERE A.STATUS  = 'A'
+           AND A.DEL_FLG = FALSE
+           ;
 
-]]>
-</select>
+        ]]>
+    </select>
+
+    <select id="TAS03" resultType="java.util.HashMap">
+        --.TAS03 ID 찾기 (EMAIL, 이름이 일치하는 유저의 ID를 반환)
+        --^
+        <![CDATA[
+
+        WITH TMP_ACC AS
+         (
+          SELECT A.H_EMAIL     H_EMAIL
+                ,A.H_USER_NAME H_USER_NAME
+            FROM (
+                  SELECT COALESCE(TRIM(#{EMAIL}    ), '') H_EMAIL
+                        ,COALESCE(TRIM(#{USER_NAME}), '') H_USER_NAME
+        --          SELECT COALESCE(TRIM('admin'), '') H_EMAIL
+        --                ,COALESCE(TRIM('admin'), '') H_USER_NAME
+                 ) A
+         )
+        SELECT A.USER_ID
+          FROM USERS A
+              INNER JOIN
+               TMP_ACC Z
+              ON    Z.H_EMAIL     = A.EMAIL
+                AND Z.H_USER_NAME = A.USER_NAME
+         WHERE A.STATUS  = 'A'
+           AND A.DEL_FLG = FALSE
+           ;
+
+        ]]>
+    </select>
+
+    <update id="TAU01" resultType="java.util.HashMap">
+        --.TAU01 랜덤 PW 설정
+        --^
+        <![CDATA[
+
+        WITH TMP_ACC AS
+         (
+          SELECT A.H_USER_ID H_USER_ID
+                ,A.H_RAND_PW H_RAND_PW
+            FROM (
+                  SELECT COALESCE(TRIM(#{USER_ID}), '') H_USER_ID
+                        ,COALESCE(TRIM(#{RAND_PW}), '') H_RAND_PW
+        --          SELECT COALESCE(TRIM('admin'), '') H_USER_ID
+        --                ,COALESCE(TRIM('admin'), '') H_RAND_PW
+                 ) A
+         )
+        UPDATE USERS A
+           SET USER_PW     = Z.H_RAND_PW
+              ,IS_PW_RESET = TRUE
+          FROM TMP_ACC Z
+         WHERE A.USER_ID = Z.H_USER_ID
+           AND A.DEL_FLG = FALSE
+           ;
+
+        ]]>
+    </update>
+
+    <update id="TAU02" resultType="java.util.HashMap">
+        --.TAU02 PW 재설정
+        --^
+        <![CDATA[
+
+        WITH TMP_ACC AS
+         (
+          SELECT A.H_USER_ID     H_USER_ID
+                ,A.H_USER_PW_OLD H_USER_PW_OLD
+                ,A.H_USER_PW_NEW H_USER_PW_NEW
+            FROM (
+                  SELECT COALESCE(TRIM(#{USER_ID    }), '') H_USER_ID
+                        ,COALESCE(TRIM(#{USER_PW_OLD}), '') H_USER_PW_OLD
+                        ,COALESCE(TRIM(#{USER_PW_NEW}), '') H_USER_PW_NEW
+        --          SELECT COALESCE(TRIM('admin'), '') H_USER_ID
+        --                ,COALESCE(TRIM('admin'), '') H_USER_PW_OLD
+        --                ,COALESCE(TRIM('admin'), '') H_USER_PW_NEW
+                 ) A
+         )
+        UPDATE USERS A
+           SET USER_PW     = Z.H_USER_PW_NEW
+              ,IS_PW_RESET = FALSE
+          FROM TMP_ACC Z
+         WHERE A.USER_ID     = Z.H_USER_ID
+           AND A.USER_PW     = Z.H_USER_PW_OLD
+           AND A.IS_PW_RESET = TRUE
+           AND A.DEL_FLG     = FALSE
+           ;
+
+        ]]>
+    </update>
+
 </mapper>
