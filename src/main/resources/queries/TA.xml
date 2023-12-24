@@ -4,7 +4,7 @@
 <!-- 로그인 및 로그인 이전에 할 수 있는 동작(회원가입, 비밀번호 찾기 등) 관련 쿼리 -->
 <mapper namespace="com.amiiboroom.ordercollector.dao.TADao">
 
-    <insert id="TAI01" resultType="java.util.HashMap">
+    <insert id="TAI01">
         --.TAI01 유저 회원가입
         --^
         <![CDATA[
@@ -158,7 +158,7 @@
         ]]>
     </select>
 
-    <update id="TAU01" resultType="java.util.HashMap">
+    <update id="TAU01">
         --.TAU01 랜덤 PW 설정
         --^
         <![CDATA[
@@ -185,7 +185,7 @@
         ]]>
     </update>
 
-    <update id="TAU02" resultType="java.util.HashMap">
+    <update id="TAU02">
         --.TAU02 PW 재설정
         --^
         <![CDATA[
