@@ -66,7 +66,7 @@ public class AccountService {
 //            backendResult = new ApiResult(BackendMessage.SUCCESS, decodeUserInfo(userMap));
             backendResult = new BackendResult(BackendMessage.SUCCESS, userMap);
         }else {
-            backendResult = new BackendResult(BackendMessage.FAILED, null);
+            backendResult = new BackendResult(BackendMessage.DATA_NOT_FOUND, null);
         }
 
         return ResponseEntity.ok(backendResult);

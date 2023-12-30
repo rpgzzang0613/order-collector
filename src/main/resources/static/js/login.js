@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const pw = document.getElementById("user_pw").value;
 
         const result = await login(id, pw);
-        if(result.message === "FAILED" || result.data == null) {
+        if(result.message === "DATA_NOT_FOUND") {
             alert("계정 정보를 확인해주세요");
             return;
         }
@@ -17,8 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("관리자에게 문의해주세요");
             return;
         }
-
-        const data = result.data;
 
         location.href = "/dashboard";
     });
