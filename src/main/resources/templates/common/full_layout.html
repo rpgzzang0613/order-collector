@@ -10,7 +10,12 @@
 <body>
     <th:block th:include="~{/common/fragments/body_sidemenu :: sidemenuFragment}"></th:block>
 
-    <main layout:fragment="content"></main>
+    <div class="wrapper d-flex flex-column min-vh-100 bg-light">
+        <th:block th:include="~{/common/fragments/body_header :: headerFragment}"></th:block>
+        <th:block layout:fragment="content"></th:block>
+    </div>
+
+    <th:block th:include="~{/common/fragments/body_footer :: footerFragment}"></th:block>
 
     <th:block th:include="~{/common/fragments/body_scripts :: scriptFragment}"></th:block>
 </body>

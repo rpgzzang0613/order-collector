@@ -8,7 +8,15 @@
     <th:block th:include="~{/common/fragments/head_css :: cssFragment}"></th:block>
 </head>
 <body>
-    <main layout:fragment="content"></main>
+    <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <th:block layout:fragment="content"></th:block>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <th:block th:include="~{/common/fragments/body_scripts :: scriptFragment}"></th:block>
 </body>
