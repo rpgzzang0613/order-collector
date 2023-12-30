@@ -8,23 +8,24 @@ document.addEventListener("DOMContentLoaded", () => {
         const pw = document.getElementById("user_pw").value;
 
         const result = await login(id, pw);
+        if(result.message === "FAILED" || result.data == null) {
+            alert("계정 정보를 확인해주세요");
+            return;
+        }
+
         if(result.message !== "SUCCESS") {
-            alert("다시 시도해주세요");
+            alert("관리자에게 문의해주세요");
             return;
         }
 
         const data = result.data;
-        if(!data.login_res) {
-            alert("계정을 확인해주세요");
-            return;
-        }
 
-        location.href = "/users/dashboard";
+        location.href = "/dashboard";
     });
 
     const login = async (id, pw) => {
         try {
-            const response = await fetch("/users/login", {
+            const response = await fetch("/accounts/login", {
                 cache: "no-cache",
                 method: "POST",
                 headers: {
