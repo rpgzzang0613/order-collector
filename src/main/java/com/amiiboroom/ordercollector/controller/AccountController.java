@@ -8,9 +8,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -39,13 +41,15 @@ public class AccountController {
      * @return
      */
     @GetMapping("/signup")
-    public String signupPage(HttpSession session) {
+    public String signupPage(HttpSession session, Model model) {
         String urlPath = "users/signup";
 
         HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
 
         if(user != null && !user.isEmpty()) {
             urlPath = "redirect:/dashboard";
+            List<HashMap<String, Object>> menuList = accountService.getMenusByRole(user);
+            model.addAttribute("menuList", menuList);
         }
 
         return urlPath;
@@ -72,13 +76,15 @@ public class AccountController {
      * @return
      */
     @GetMapping("/login")
-    public String loginPage(HttpSession session) {
+    public String loginPage(HttpSession session, Model model) {
         String urlPath = "users/login";
 
         HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
 
         if(user != null && !user.isEmpty()) {
             urlPath = "redirect:/dashboard";
+            List<HashMap<String, Object>> menuList = accountService.getMenusByRole(user);
+            model.addAttribute("menuList", menuList);
         }
 
         return urlPath;
@@ -134,7 +140,6 @@ public class AccountController {
     @PutMapping("/tmp-pwd")
     @ResponseBody
     public ResponseEntity<BackendResult> updatePwdTemp(@RequestBody HashMap<String, Object> requestMap) {
-
         return accountService.updatePwdTemp(requestMap);
     }
 

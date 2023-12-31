@@ -1,16 +1,15 @@
 package com.amiiboroom.ordercollector.controller;
 
-import com.amiiboroom.ordercollector.dto.BackendResult;
 import com.amiiboroom.ordercollector.service.AccountService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,11 +24,13 @@ public class MainController {
      * @return
      */
     @GetMapping("/")
-    public String indexPage(HttpSession session) {
+    public String indexPage(HttpSession session, Model model) {
         String urlPath = "redirect:/accounts/login";
 
         HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
         if(user != null && !user.isEmpty()) {
+            List<HashMap<String, Object>> menuList = accountService.getMenusByRole(user);
+            model.addAttribute("menuList", menuList);
             return "redirect:/dashboard";
         }
 
@@ -42,7 +43,7 @@ public class MainController {
      * @return
      */
     @GetMapping("/dashboard")
-    public String dashboardPage(HttpSession session) {
+    public String dashboardPage(HttpSession session, Model model) {
         String urlPath = "dashboard";
 
         HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
@@ -51,20 +52,10 @@ public class MainController {
             urlPath = "redirect:/accounts/login";
         }
 
+        List<HashMap<String, Object>> menuList = accountService.getMenusByRole(user);
+        model.addAttribute("menuList", menuList);
+
         return urlPath;
-    }
-
-    /**
-     * 유저 권한에 따라 표시할 메뉴 조회
-     * @param session
-     * @return
-     */
-    @GetMapping("/menus")
-    @ResponseBody
-    public ResponseEntity<BackendResult> getMenusByRole(HttpSession session) {
-        HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
-
-        return accountService.getMenusByRole(user);
     }
 
 }
