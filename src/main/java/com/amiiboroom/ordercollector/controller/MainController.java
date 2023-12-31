@@ -62,9 +62,9 @@ public class MainController {
     @GetMapping("/menus")
     @ResponseBody
     public ResponseEntity<BackendResult> getMenusByRole(HttpSession session) {
-        HashMap<String, Object> userMap = (HashMap<String, Object>) session.getAttribute("user");
+        HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
 
-        return accountService.getMenusByRole(userMap);
+        return accountService.getMenusByRole(user);
     }
 
 }

@@ -39,8 +39,16 @@ public class AccountController {
      * @return
      */
     @GetMapping("/signup")
-    public String signupPage() {
-        return "users/signup";
+    public String signupPage(HttpSession session) {
+        String urlPath = "users/signup";
+
+        HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
+
+        if(user != null && !user.isEmpty()) {
+            urlPath = "redirect:/dashboard";
+        }
+
+        return urlPath;
     }
 
     /**

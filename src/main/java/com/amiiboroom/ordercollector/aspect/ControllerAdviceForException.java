@@ -1,19 +1,19 @@
-package com.amiiboroom.ordercollector.controller;
+package com.amiiboroom.ordercollector.aspect;
 
 import com.amiiboroom.ordercollector.dto.BackendResult;
 import com.amiiboroom.ordercollector.util.enums.BackendMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @Slf4j
-@RestControllerAdvice
-public class CustomControllerAdvice {
+@ControllerAdvice
+public class ControllerAdviceForException {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BackendResult> handleException(Exception e) {
