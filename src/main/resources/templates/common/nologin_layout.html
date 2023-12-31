@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <!-- 페이지마다 메타태그를 다르게하려면 main과 동일한 방식으로 수정 -->
+    <!--    <th:block layout:fragment="head"></th:block>-->
+
+    <th:block th:insert="~{/common/fragments/head_meta :: metaFragment}"></th:block>
+    <th:block th:insert="~{/common/fragments/head_css :: cssFragment}"></th:block>
+</head>
+<body>
+    <th:block layout:fragment="content"></th:block>
+
+    <th:block th:insert="~{/common/fragments/body_scripts :: scriptFragment}"></th:block>
+</body>
+</html>

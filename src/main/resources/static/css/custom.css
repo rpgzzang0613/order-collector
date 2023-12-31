@@ -1,26 +1,12 @@
 /** CSS 정의 **/
 
-#login-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-#login-form input {
-    width: 100%;
-    padding: 8px;
-    margin: 8px 0;
-    box-sizing: border-box;
-}
-
-#login-form button {
-    background-color: #4caf50;
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
+.sidebar-footer {
+    display: flex;
+    flex: 0 0 var(--cui-sidebar-toggler-height);
+    justify-content: flex-end;
+    width: inherit;
+    padding: 0;
     cursor: pointer;
+    background-color: var(--cui-sidebar-toggler-bg);
+    border: 0;
 }
-
