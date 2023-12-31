@@ -3,8 +3,28 @@
 <!-- 페이지마다 head meta를 다르게 적용할거면 아래 주석풀고 거기에 정의 -->
 <!--<th:block layout:fragment="head"></th:block>-->
 <th:block layout:fragment="content">
-    <main>
-        회원가입 페이지
+    <main class="bg-light min-vh-100 d-flex flex-row align-items-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card mb-4 mx-4">
+                        <div class="card-body p-4">
+                            <h1>회원 가입</h1>
+                            <p class="text-medium-emphasis">계정 정보를 입력해주세요</p>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" type="text" name="user_id" id="user_id" placeholder="아이디">
+                                <label for="user_id">아이디</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" type="password" name="user_pw" id="user_pw" placeholder="비밀번호">
+                                <label for="user_pw">비밀번호</label>
+                            </div>
+                            <button class="btn btn-block btn-success" type="button" id="btn_signup">회원 가입</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 </th:block>
 </html>

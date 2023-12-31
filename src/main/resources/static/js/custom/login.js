@@ -1,8 +1,12 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const loginBtn = document.getElementById("btn_login");
+    const goSignupBtn = document.getElementById("btn_open_signup");
+    goSignupBtn.addEventListener("click", () => {
+        location.href = "/accounts/signup";
+    });
 
+    const loginBtn = document.getElementById("btn_login");
     loginBtn.addEventListener("click", async () => {
         const id = document.getElementById("user_id").value;
         const pw = document.getElementById("user_pw").value;
