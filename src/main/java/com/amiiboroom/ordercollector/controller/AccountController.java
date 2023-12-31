@@ -130,4 +130,14 @@ public class AccountController {
         return accountService.updatePwdTemp(requestMap);
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
+        if(user != null) {
+            session.removeAttribute("user");
+        }
+
+        return "redirect:/";
+    }
+
 }
