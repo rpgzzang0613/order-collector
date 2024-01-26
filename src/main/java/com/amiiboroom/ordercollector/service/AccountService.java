@@ -7,6 +7,7 @@ import com.amiiboroom.ordercollector.util.enums.BackendMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,11 +27,18 @@ public class AccountService {
     private final StandardPBEStringEncryptor dataEncryptor;     // 양방향
     private final PasswordEncoder passwordEncoder;              // 단방향
 
+    @Value("${spring.profiles.active}")
+    private String activatedEnv;
+
     public ResponseEntity<BackendResult> checkAccountExists(HashMap<String, Object> requestMap) {
         BackendResult backendResult;
 
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
-//        HashMap<String, Object> checkMap = taDao.TAS01(encodeUserInfo(changedMap));
+
+        if("real".equals(activatedEnv)) {
+            changedMap = encodeUserInfo(changedMap);
+        }
+
         HashMap<String, Object> checkMap = taDao.TAS01(changedMap);
         if(checkMap != null && !checkMap.isEmpty()) {
             backendResult = new BackendResult(BackendMessage.SUCCESS, checkMap);
@@ -45,7 +53,11 @@ public class AccountService {
         BackendResult backendResult;
 
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
-//        int res = taDao.TAI01(encodeUserInfo(changedMap));
+
+        if("real".equals(activatedEnv)) {
+            changedMap = encodeUserInfo(changedMap);
+        }
+
         int res = taDao.TAI01(changedMap);
 
         if(res > 0) {
@@ -64,7 +76,10 @@ public class AccountService {
         HashMap<String, Object> userMap = taDao.TAS02(changedMap);
 
         if(userMap != null && !userMap.isEmpty()) {
-//            backendResult = new ApiResult(BackendMessage.SUCCESS, decodeUserInfo(userMap));
+            if("real".equals(activatedEnv)) {
+                userMap = decodeUserInfo(userMap);
+            }
+
             backendResult = new BackendResult(BackendMessage.SUCCESS, userMap);
         }else {
             backendResult = new BackendResult(BackendMessage.DATA_NOT_FOUND, null);
@@ -77,7 +92,11 @@ public class AccountService {
         BackendResult backendResult;
 
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
-//        HashMap<String, Object> idMap = taDao.TAS03(encodeUserInfo(changedMap));
+
+        if("real".equals(activatedEnv)) {
+            changedMap = encodeUserInfo(changedMap);
+        }
+
         HashMap<String, Object> idMap = taDao.TAS03(changedMap);
         if(idMap != null && !idMap.isEmpty()) {
             backendResult = new BackendResult(BackendMessage.SUCCESS, idMap);
@@ -95,7 +114,11 @@ public class AccountService {
 
     public List<HashMap<String, Object>> getMenusByRole(HashMap<String, Object> requestMap) {
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
-//        List<HashMap<String, Object>> beforeList = tbDao.TBS01(encodeUserInfo(changedMap));
+
+        if("real".equals(activatedEnv)) {
+            changedMap = encodeUserInfo(changedMap);
+        }
+
         List<HashMap<String, Object>> beforeList = tbDao.TBS01(changedMap);
 
         List<HashMap<String, Object>> afterList;
