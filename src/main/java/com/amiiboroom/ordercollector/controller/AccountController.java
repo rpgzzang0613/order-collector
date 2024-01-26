@@ -45,11 +45,8 @@ public class AccountController {
         String urlPath = "users/signup";
 
         HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
-
         if(user != null && !user.isEmpty()) {
             urlPath = "redirect:/dashboard";
-            List<HashMap<String, Object>> menuList = accountService.getMenusByRole(user);
-            model.addAttribute("menuList", menuList);
         }
 
         return urlPath;
@@ -80,11 +77,8 @@ public class AccountController {
         String urlPath = "users/login";
 
         HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
-
         if(user != null && !user.isEmpty()) {
             urlPath = "redirect:/dashboard";
-            List<HashMap<String, Object>> menuList = accountService.getMenusByRole(user);
-            model.addAttribute("menuList", menuList);
         }
 
         return urlPath;

@@ -16,8 +16,6 @@ import java.util.List;
 @Slf4j
 public class MainController {
 
-    private final AccountService accountService;
-
     /**
      * 루트 URL로 진입할때 로그인상태면 대시보드로, 로그아웃상태면 로그인페이지로 리다이렉트
      * @param session
@@ -29,9 +27,7 @@ public class MainController {
 
         HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
         if(user != null && !user.isEmpty()) {
-            List<HashMap<String, Object>> menuList = accountService.getMenusByRole(user);
-            model.addAttribute("menuList", menuList);
-            return "redirect:/dashboard";
+            urlPath = "redirect:/dashboard";
         }
 
         return urlPath;
@@ -44,16 +40,12 @@ public class MainController {
      */
     @GetMapping("/dashboard")
     public String dashboardPage(HttpSession session, Model model) {
-        String urlPath = "dashboard";
+        String urlPath = "redirect:/accounts/login";
 
         HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
-
-        if(user == null || user.isEmpty()) {
-            urlPath = "redirect:/accounts/login";
+        if(user != null && !user.isEmpty()) {
+            urlPath = "dashboard";
         }
-
-        List<HashMap<String, Object>> menuList = accountService.getMenusByRole(user);
-        model.addAttribute("menuList", menuList);
 
         return urlPath;
     }
