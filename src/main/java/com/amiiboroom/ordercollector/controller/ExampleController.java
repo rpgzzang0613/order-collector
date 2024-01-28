@@ -59,9 +59,9 @@ public class ExampleController {
     }
 
 
-    @GetMapping("/naver-orders")
-    public ConcurrentHashMap<String, Object> getNaverOrderListFromWeb(@RequestParam String id, @RequestParam String pw) {
-        return exampleService.getNaverOrderListFromWeb(id, pw);
+    @PostMapping("/naver-orders")
+    public ConcurrentHashMap<String, Object> getNaverOrderListFromWeb(@RequestBody HashMap<String, Object> requestMap) {
+        return exampleService.getNaverOrderListFromWeb(requestMap);
     }
 
 }

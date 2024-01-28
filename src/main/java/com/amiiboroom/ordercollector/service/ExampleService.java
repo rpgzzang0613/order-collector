@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ExampleService {
 
-    public ConcurrentHashMap<String, Object> getNaverOrderListFromWeb(String id, String pw) {
+    public ConcurrentHashMap<String, Object> getNaverOrderListFromWeb(HashMap<String, Object> requestMap) {
         ConcurrentHashMap<String, Object> resultMap = new ConcurrentHashMap<>();
 
         try {
@@ -40,19 +40,19 @@ public class ExampleService {
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10L)); // 페이지 대기시간 10초 (넘어가도록 응답없으면 예외발생)
 
             driver.get("https://new-m.pay.naver.com/pcpay?serviceGroup=SHOPPING&page=1");
-            Thread.sleep(1000);
+            Thread.sleep(2000);
 
             JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
 
-            jsExecutor.executeScript(String.format("document.getElementById('id').value = '%s'", id));
+            jsExecutor.executeScript(String.format("document.getElementById('id').value = '%s'", requestMap.get("id").toString()));
             Thread.sleep(2203);
-            jsExecutor.executeScript(String.format("document.getElementById('pw').value = '%s'", pw));
+            jsExecutor.executeScript(String.format("document.getElementById('pw').value = '%s'", requestMap.get("pw").toString()));
             Thread.sleep(2725);
 
             driver.findElement(By.cssSelector("#pw")).sendKeys(Keys.ENTER);
 
             // 2단계 인증을 위한 대기시간
-            Thread.sleep(10000);
+            Thread.sleep(13000);
 
             int page = 1;
             int totalPage = 0;
