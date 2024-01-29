@@ -21,13 +21,23 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    /**
+     * DB에 저장된 주문 목록 조회
+     * @param site - 조회할 사이트
+     * @param requestMap -
+     * @return 주문 목록
+     */
     @GetMapping("/db/{site}")
     public ResponseEntity<BackendResult> getNaverOrderListFromDB(@PathVariable String site, @RequestParam HashMap<String, Object> requestMap) {
-        
-
         return orderService.getOrderListFromDB(site, requestMap);
     }
 
+    /**
+     * 웹사이트 크롤링을 통한 주문 목록 조회
+     * @param site - 조회할 사이트
+     * @param requestMap - 조회할 사이트의 id, pw
+     * @return 주문 목록
+     */
     @GetMapping("/web/{site}")
     public ResponseEntity<BackendResult> getNaverOrderListFromWeb(@PathVariable String site, @RequestParam HashMap<String, Object> requestMap) {
         return orderService.getOrderListFromWeb(site, requestMap);
