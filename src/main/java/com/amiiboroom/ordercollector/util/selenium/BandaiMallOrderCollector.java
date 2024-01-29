@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -18,7 +17,7 @@ public class BandaiMallOrderCollector implements OrderCollector {
     }
 
     @Override
-    public List<HashMap<String, Object>> getOrderList() {
+    public HashMap<String, Object> getOrderList() {
         return null;
     }
 }

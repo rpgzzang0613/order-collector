@@ -44,17 +44,33 @@ public class OrderService {
         boolean isLoggedIn = orderCollector.login(requestMap);
 
         if(!isLoggedIn) {
-            // 로그인 실패시 리턴
-            backendResult = new BackendResult(BackendMessage.FAILED, null);
+            // 로그인 실패시
+            backendResult = new BackendResult(BackendMessage.FAILED_TO_SHOP_LOGIN, null);
             return ResponseEntity.ok(backendResult);
         }
 
-        List<HashMap<String, Object>> resultList = Optional.ofNullable(orderCollector.getOrderList()).orElseGet(ArrayList::new);
-        if(resultList.isEmpty()) {
+        HashMap<String, Object> resultMap = Optional.ofNullable(orderCollector.getOrderList()).orElseGet(HashMap::new);
+        if(resultMap.isEmpty()) {
+            // 조회결과 없는 경우
             backendResult = new BackendResult(BackendMessage.DATA_NOT_FOUND, null);
-        }else {
-            backendResult = new BackendResult(BackendMessage.SUCCESS, resultList);
+            return ResponseEntity.ok(backendResult);
         }
+
+        if(resultMap.get("result") == null || "failure".equals(resultMap.get("result"))) {
+            // 페이지 조회 도중 실패한 경우
+            backendResult = new BackendResult(BackendMessage.FAILED_TO_CRAWLING, null);
+            return ResponseEntity.ok(backendResult);
+        }
+
+        List<HashMap<String, Object>> resultList = (List<HashMap<String, Object>>) resultMap.get("list");
+
+        if(resultList == null || resultList.isEmpty()) {
+            // 리스트가 없는 경우
+            backendResult = new BackendResult(BackendMessage.DATA_NOT_FOUND, null);
+            return ResponseEntity.ok(backendResult);
+        }
+
+        backendResult = new BackendResult(BackendMessage.SUCCESS, resultList);
 
         return ResponseEntity.ok(backendResult);
     }

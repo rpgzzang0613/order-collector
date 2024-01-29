@@ -65,7 +65,9 @@ public class NaverOrderCollector implements OrderCollector {
     }
 
     @Override
-    public List<HashMap<String, Object>> getOrderList() {
+    public HashMap<String, Object> getOrderList() {
+        HashMap<String, Object> resultMap = new HashMap<>();
+
         List<HashMap<String, Object>> resultList = new ArrayList<>();
 
         WebDriver driver = seleniumUtil.initWebDriver();
@@ -79,23 +81,29 @@ public class NaverOrderCollector implements OrderCollector {
             int page = 1;
             int totalPage = 0;
 
-
             while(true) {
                 HashMap<String, Object> tmpMap = getNaverProductListOnePage(driver, page);
 
-                if(page == 1) {
-                    totalPage = Integer.parseInt(tmpMap.get("totalPage").toString());
-                }
+                if(!tmpMap.isEmpty() && "success".equals(tmpMap.get("result"))) {
+                    if(page == 1) {
+                        totalPage = Integer.parseInt(tmpMap.get("totalPage").toString());
+                    }
 
-                resultList.addAll((List<HashMap<String, Object>>)tmpMap.get("list"));
+                    resultList.addAll((List<HashMap<String, Object>>)tmpMap.get("list"));
 
-                if(page >= totalPage) {
+                    if(page >= totalPage) {
+                        resultMap.put("result", "success");
+                        resultMap.put("list", resultList);
+                        break;
+                    }
+
+                    page++;
+                }else {
+                    log.error("네이버 주문 목록 페이지 변경중 오류 발생");
+                    resultMap.put("result", "failure");
                     break;
                 }
-
-                page++;
             }
-
         }catch(Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -107,7 +115,7 @@ public class NaverOrderCollector implements OrderCollector {
             seleniumUtil.quitWebDriver(driver);
         }
 
-        return resultList;
+        return resultMap;
     }
 
     private HashMap<String, Object> getNaverProductListOnePage(WebDriver driver , int page) throws JsonProcessingException {
@@ -121,49 +129,18 @@ public class NaverOrderCollector implements OrderCollector {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        HashMap<String, Object> jsonMap = objectMapper.readValue(jsonStr, HashMap.class);
+        HashMap<String, Object> outerMap = objectMapper.readValue(jsonStr, HashMap.class);
 
-        if(jsonMap.get("code") == null) {
-            log.error("JSON 조회 실패1 - code가 없음");
+        String errMsg = validateJsonAndReturnErrorMsg(outerMap);
+
+        if(!errMsg.isEmpty()) {
             resultMap.put("result", "failure");
+            resultMap.put("msg", errMsg);
+
             return resultMap;
         }
 
-        if(!"00".equals(jsonMap.get("code"))) {
-            log.error("JSON 조회 실패2 - code가 00이 아님");
-            resultMap.put("result", "failure");
-            return resultMap;
-        }
-
-        if(jsonMap.get("result") == null) {
-            String msg = "JSON 조회 실패3 - result가 없음";
-            log.error(msg);
-            resultMap.put("result", "failure");
-            resultMap.put("msg", msg);
-            return resultMap;
-        }
-
-        HashMap<String, Object> innerMap = (HashMap<String, Object>) jsonMap.get("result");
-
-        if(innerMap.get("success") == null) {
-            String msg = "JSON 조회 실패4 - success가 없음";
-            log.error(msg);
-            resultMap.put("result", "failure");
-            resultMap.put("msg", msg);
-            return resultMap;
-        }
-
-        if(!(boolean)innerMap.get("success")) {
-            String msg = "JSON 조회 실패5 - success가 true가 아님";
-            log.error(msg);
-            resultMap.put("result", "failure");
-            resultMap.put("msg", msg);
-            return resultMap;
-        }
-
-        if(innerMap.get("totalPage") != null && page == 1) {
-            resultMap.put("totalPage", innerMap.get("totalPage"));
-        }
+        HashMap<String, Object> innerMap = (HashMap<String, Object>) outerMap.get("result");
 
         List<HashMap<String, Object>> itemList;
         if(innerMap.get("items") != null) {
@@ -184,9 +161,42 @@ public class NaverOrderCollector implements OrderCollector {
                 .filter(item -> "ORDER".equals(item.get("serviceType")))
                 .collect(Collectors.toList());
 
+        resultMap.put("result", "success");
         resultMap.put("list", resultList);
 
         return resultMap;
+    }
+
+    private String validateJsonAndReturnErrorMsg(HashMap<String, Object> outerMap) {
+        String msg = "";
+
+        if(outerMap.get("code") == null) {
+            msg = "JSON 조회 실패1 - code가 없음";
+        }else if(!"00".equals(outerMap.get("code"))) {
+            msg = "JSON 조회 실패2 - code가 00이 아님";
+        }else if(outerMap.get("result") == null) {
+            msg = "JSON 조회 실패3 - result가 없음";
+        }
+
+        if(!msg.isEmpty()) {
+            log.error(msg);
+
+            return msg;
+        }
+
+        HashMap<String, Object> innerMap = (HashMap<String, Object>) outerMap.get("result");
+
+        if(innerMap.get("success") == null) {
+            msg = "JSON 조회 실패4 - success가 없음";
+        }else if(!(boolean) innerMap.get("success")) {
+            msg = "JSON 조회 실패5 - success가 true가 아님";
+        }
+
+        if(!msg.isEmpty()) {
+            log.error(msg);
+        }
+
+        return msg;
     }
 
 }
