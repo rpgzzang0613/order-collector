@@ -20,13 +20,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
-@RequiredArgsConstructor
 @ControllerAdvice
+@RequiredArgsConstructor
+@Slf4j
 public class GlobalControllerAdvice {
 
     private final AccountService accountService;
 
+    /**
+     * 페이지 넘어갈때 공통으로 조회하는 데이터들 Model 객체에 추가
+     * @param model
+     * @param request
+     * @param session
+     */
     @ModelAttribute
     public void addCommonAttributes(Model model, HttpServletRequest request, HttpSession session) {
         String acceptStr = Optional.ofNullable(request.getHeader("Accept")).orElse("");
@@ -34,7 +40,7 @@ public class GlobalControllerAdvice {
 
         boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With")) || acceptStr.contains("application/json");
         boolean isError = "/error".equals(requestUri);
-    
+
         if(!isAjax && !isError) {
             // 비동기 요청이나 에러페이지 요청이 아닐때만
 
@@ -46,6 +52,11 @@ public class GlobalControllerAdvice {
         }
     }
 
+    /**
+     * 예외처리 분리
+     * @param e
+     * @return
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BackendResult> handleException(Exception e) {
         StringWriter sw = new StringWriter();

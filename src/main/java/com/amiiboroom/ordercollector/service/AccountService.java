@@ -28,14 +28,14 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;              // 단방향
 
     @Value("${spring.profiles.active}")
-    private String activatedEnv;
+    private String activatedProfile;
 
     public ResponseEntity<BackendResult> checkAccountExists(HashMap<String, Object> requestMap) {
         BackendResult backendResult;
 
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
-        if("real".equals(activatedEnv)) {
+        if("real".equals(activatedProfile)) {
             changedMap = encodeUserInfo(changedMap);
         }
 
@@ -54,7 +54,7 @@ public class AccountService {
 
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
-        if("real".equals(activatedEnv)) {
+        if("real".equals(activatedProfile)) {
             changedMap = encodeUserInfo(changedMap);
         }
 
@@ -76,7 +76,7 @@ public class AccountService {
         HashMap<String, Object> userMap = taDao.TAS02(changedMap);
 
         if(userMap != null && !userMap.isEmpty()) {
-            if("real".equals(activatedEnv)) {
+            if("real".equals(activatedProfile)) {
                 userMap = decodeUserInfo(userMap);
             }
 
@@ -93,7 +93,7 @@ public class AccountService {
 
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
-        if("real".equals(activatedEnv)) {
+        if("real".equals(activatedProfile)) {
             changedMap = encodeUserInfo(changedMap);
         }
 
@@ -115,7 +115,7 @@ public class AccountService {
     public List<HashMap<String, Object>> getMenusByRole(HashMap<String, Object> requestMap) {
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
-        if("real".equals(activatedEnv)) {
+        if("real".equals(activatedProfile)) {
             changedMap = encodeUserInfo(changedMap);
         }
 

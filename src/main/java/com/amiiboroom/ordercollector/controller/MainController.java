@@ -1,15 +1,12 @@
 package com.amiiboroom.ordercollector.controller;
 
-import com.amiiboroom.ordercollector.service.AccountService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.HashMap;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,7 +19,7 @@ public class MainController {
      * @return
      */
     @GetMapping("/")
-    public String indexPage(HttpSession session, Model model) {
+    public String indexPage(HttpSession session) {
         String urlPath = "redirect:/accounts/login";
 
         HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
@@ -39,7 +36,7 @@ public class MainController {
      * @return
      */
     @GetMapping("/dashboard")
-    public String dashboardPage(HttpSession session, Model model) {
+    public String dashboardPage(HttpSession session) {
         String urlPath = "redirect:/accounts/login";
 
         HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
