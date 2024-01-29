@@ -58,13 +58,14 @@ public class GlobalControllerAdvice {
      * @return
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<BackendResult> handleException(Exception e) {
+    public ResponseEntity<BackendResult> handleException(Exception e, HttpServletRequest request) {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
 
+        String requestURI = request.getRequestURI();
         String stackTraceStr = sw.toString();
 
-        log.error("----- Exception StackTrace -----\n{}", stackTraceStr);
+        log.error("\nrequest URL - {}\n----- Exception StackTrace -----\n{}", requestURI, stackTraceStr);
 
         BackendResult backendResult = new BackendResult(BackendMessage.FAILED, null);
 
