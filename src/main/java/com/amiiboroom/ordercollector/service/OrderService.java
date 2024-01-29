@@ -21,7 +21,7 @@ public class OrderService {
 
 //    private final TCDao tcDao;
 
-    private SeleniumUtil seleniumUtil;
+    private final SeleniumUtil seleniumUtil;
 
     public ResponseEntity<BackendResult> getOrderListFromDB(String site, HashMap<String, Object> requestMap) {
         return null;
