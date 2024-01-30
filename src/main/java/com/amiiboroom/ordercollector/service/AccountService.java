@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class AccountService {
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
         if("real".equals(activatedProfile)) {
-            changedMap = encodeUserInfo(changedMap);
+            String[] keysToEncode = {"user_id", "user_name", "email"};
+            changedMap = encodeMapValues(changedMap, keysToEncode);
         }
 
         HashMap<String, Object> checkMap = taDao.TAS01(changedMap);
@@ -55,7 +57,8 @@ public class AccountService {
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
         if("real".equals(activatedProfile)) {
-            changedMap = encodeUserInfo(changedMap);
+            String[] keysToEncode = {"user_id", "user_name", "email"};
+            changedMap = encodeMapValues(changedMap, keysToEncode);
         }
 
         int res = taDao.TAI01(changedMap);
@@ -77,7 +80,8 @@ public class AccountService {
 
         if(userMap != null && !userMap.isEmpty()) {
             if("real".equals(activatedProfile)) {
-                userMap = decodeUserInfo(userMap);
+                String[] keysToDecode = {"user_id", "user_name", "email"};
+                userMap = decodeMapValues(userMap, keysToDecode);
             }
 
             backendResult = new BackendResult(BackendMessage.SUCCESS, userMap);
@@ -94,7 +98,8 @@ public class AccountService {
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
         if("real".equals(activatedProfile)) {
-            changedMap = encodeUserInfo(changedMap);
+            String[] keysToEncode = {"user_id", "user_name", "email"};
+            changedMap = encodeMapValues(changedMap, keysToEncode);
         }
 
         HashMap<String, Object> idMap = taDao.TAS03(changedMap);
@@ -116,7 +121,8 @@ public class AccountService {
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
         if("real".equals(activatedProfile)) {
-            changedMap = encodeUserInfo(changedMap);
+            String[] keysToEncode = {"user_id", "user_name", "email"};
+            changedMap = encodeMapValues(changedMap, keysToEncode);
         }
 
         List<HashMap<String, Object>> beforeList = tbDao.TBS01(changedMap);
@@ -139,23 +145,29 @@ public class AccountService {
         return changedMap;
     }
 
-    private HashMap<String, Object> encodeUserInfo(HashMap<String, Object> map) {
+    private HashMap<String, Object> encodeMapValues(HashMap<String, Object> map, String[] keysToEncode) {
         HashMap<String, Object> encodedMap = new HashMap<>(map);
+
         encodedMap.forEach((k, v) -> {
-            if("user_id".equalsIgnoreCase(k) || "user_name".equalsIgnoreCase(k) || "email".equalsIgnoreCase(k)) {
-                encodedMap.put(k, dataEncryptor.encrypt(v.toString()));
-            }else if("user_pw".equalsIgnoreCase(k)) {
+            boolean isEncodeValue = Arrays.stream(keysToEncode).anyMatch(k2 -> k2.equalsIgnoreCase(k));
+
+            if("user_pw".equalsIgnoreCase(k) && v != null && !v.toString().isEmpty()) {
                 encodedMap.put(k, passwordEncoder.encode(v.toString()));
+            }else if(isEncodeValue && v != null && !v.toString().isEmpty()) {
+                encodedMap.put(k, dataEncryptor.encrypt(v.toString()));
             }
         });
 
         return encodedMap;
     }
 
-    private HashMap<String, Object> decodeUserInfo(HashMap<String, Object> map) {
+    private HashMap<String, Object> decodeMapValues(HashMap<String, Object> map, String[] keysToDecode) {
         HashMap<String, Object> decodedMap = new HashMap<>(map);
+
         decodedMap.forEach((k, v) -> {
-            if("user_id".equalsIgnoreCase(k) || "user_name".equalsIgnoreCase(k) || "email".equalsIgnoreCase(k)) {
+            boolean isDecodeValue = Arrays.stream(keysToDecode).anyMatch(k2 -> k2.equalsIgnoreCase(k));
+
+            if(isDecodeValue && v != null && !v.toString().isEmpty()) {
                 decodedMap.put(k, dataEncryptor.decrypt(v.toString()));
             }
         });
