@@ -29,6 +29,13 @@ public class OrderController {
      */
     @GetMapping("/db/{site}")
     public ResponseEntity<BackendResult> getNaverOrderListFromDB(@PathVariable String site, @RequestParam HashMap<String, Object> requestMap) {
+        boolean isValid = validateSite(site);
+
+        if(!isValid) {
+            BackendResult backendResult = new BackendResult(BackendMessage.INVALID_REQUEST, null);
+            return ResponseEntity.ok(backendResult);
+        }
+
         return orderService.getOrderListFromDB(site, requestMap);
     }
 
@@ -39,8 +46,28 @@ public class OrderController {
      * @return 주문 목록
      */
     @GetMapping("/web/{site}")
-    public ResponseEntity<BackendResult> getNaverOrderListFromWeb(@PathVariable String site, @RequestParam HashMap<String, Object> requestMap) {
+    public ResponseEntity<BackendResult> getNaverOrderListFromWeb(@PathVariable String site, @RequestParam HashMap<String, Object> requestMap) throws InterruptedException, JsonProcessingException {
+        boolean isValid = validateSite(site);
+
+        if(!isValid) {
+            BackendResult backendResult = new BackendResult(BackendMessage.INVALID_REQUEST, null);
+            return ResponseEntity.ok(backendResult);
+        }
+
         return orderService.getOrderListFromWeb(site, requestMap);
+    }
+
+    private boolean validateSite(String site) {
+        boolean isValid = false;
+
+        for(SiteType s : SiteType.values()) {
+            if(s.name().equalsIgnoreCase(site)) {
+                isValid = true;
+                break;
+            }
+        }
+
+        return isValid;
     }
 
 }
