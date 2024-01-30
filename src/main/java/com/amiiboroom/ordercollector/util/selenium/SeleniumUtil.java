@@ -20,7 +20,7 @@ public class SeleniumUtil {
 
         WebDriverManager.chromedriver().setup();            // 크롬드라이버 버전 체크 및 매칭
         WebDriver driver = new ChromeDriver(options);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10L)); // 페이지 대기시간 10초 (넘어가도록 응답없으면 예외발생)
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(13L)); // 페이지 대기시간 13초 (넘어가도록 응답없으면 예외발생)
 
         return driver;
     }
