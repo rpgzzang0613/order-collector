@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,102 +15,74 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NaverOrderCollector implements OrderCollector {
 
-    private final SeleniumUtil seleniumUtil;
+    private final WebDriver driver;
 
     @Override
-    public boolean login(HashMap<String, Object> requestMap) {
+    public boolean login(HashMap<String, Object> requestMap) throws InterruptedException {
         boolean isLoggedIn = false;
 
-        WebDriver driver = seleniumUtil.initWebDriver();
+        driver.get("https://nid.naver.com/nidlogin.login");
+        Thread.sleep(2000);
+
+        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+
+        jsExecutor.executeScript(String.format("document.getElementById('id').value = '%s'", requestMap.get("id").toString()));
+        Thread.sleep(2203);
+        jsExecutor.executeScript(String.format("document.getElementById('pw').value = '%s'", requestMap.get("pw").toString()));
+        Thread.sleep(2725);
+
+        driver.findElement(By.cssSelector("#pw")).sendKeys(Keys.ENTER);
+
+        // 2단계 인증을 위한 대기시간
+        Thread.sleep(13000);
 
         try {
-
-            driver.get("https://nid.naver.com/nidlogin.login");
-            Thread.sleep(2000);
-
-            JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-
-            jsExecutor.executeScript(String.format("document.getElementById('id').value = '%s'", requestMap.get("id").toString()));
-            Thread.sleep(2203);
-            jsExecutor.executeScript(String.format("document.getElementById('pw').value = '%s'", requestMap.get("pw").toString()));
-            Thread.sleep(2725);
-
-            driver.findElement(By.cssSelector("#pw")).sendKeys(Keys.ENTER);
-
-            // 2단계 인증을 위한 대기시간
-            Thread.sleep(13000);
-
-            try {
-                WebElement button = driver.findElement(By.cssSelector("#account")).findElement(By.cssSelector("[class*='btn_logout']"));
-                if(button != null && button.getText().equals("로그아웃")) {
-                    isLoggedIn = true;
-                }
-            }catch(NoSuchElementException e) {
-                // 못찾으면 그냥 isLoggedIn 값 안바꿔서 실패처리
+            WebElement button = driver.findElement(By.cssSelector("#account")).findElement(By.cssSelector("[class*='btn_logout']"));
+            if(button != null && button.getText().equals("로그아웃")) {
+                isLoggedIn = true;
             }
-        }catch(Exception e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-
-            String stackTraceStr = sw.toString();
-
-            log.error("----- Exception StackTrace -----\n{}", stackTraceStr);
-        }finally {
-            seleniumUtil.quitWebDriver(driver);
+        }catch(NoSuchElementException e) {
+            // 못찾으면 그냥 isLoggedIn 값 안바꿔서 실패처리
         }
 
         return isLoggedIn;
     }
 
     @Override
-    public HashMap<String, Object> getOrderList() {
+    public HashMap<String, Object> getOrderList() throws JsonProcessingException, InterruptedException {
         HashMap<String, Object> resultMap = new HashMap<>();
 
         List<HashMap<String, Object>> resultList = new ArrayList<>();
 
-        WebDriver driver = seleniumUtil.initWebDriver();
+        driver.get("https://new-m.pay.naver.com/pcpay?serviceGroup=SHOPPING&page=1");
 
-        try {
+        Thread.sleep(2000);
 
-            driver.get("https://new-m.pay.naver.com/pcpay?serviceGroup=SHOPPING&page=1");
+        int page = 1;
+        int totalPage = 0;
 
-            Thread.sleep(2000);
+        while(true) {
+            HashMap<String, Object> tmpMap = getNaverProductListOnePage(driver, page);
 
-            int page = 1;
-            int totalPage = 0;
+            if(!tmpMap.isEmpty() && "success".equals(tmpMap.get("result"))) {
+                if(page == 1) {
+                    totalPage = Integer.parseInt(tmpMap.get("totalPage").toString());
+                }
 
-            while(true) {
-                HashMap<String, Object> tmpMap = getNaverProductListOnePage(driver, page);
+                resultList.addAll((List<HashMap<String, Object>>)tmpMap.get("list"));
 
-                if(!tmpMap.isEmpty() && "success".equals(tmpMap.get("result"))) {
-                    if(page == 1) {
-                        totalPage = Integer.parseInt(tmpMap.get("totalPage").toString());
-                    }
-
-                    resultList.addAll((List<HashMap<String, Object>>)tmpMap.get("list"));
-
-                    if(page >= totalPage) {
-                        resultMap.put("result", "success");
-                        resultMap.put("list", resultList);
-                        break;
-                    }
-
-                    page++;
-                }else {
-                    log.error("네이버 주문 목록 페이지 변경중 오류 발생");
-                    resultMap.put("result", "failure");
+                if(page >= totalPage) {
+                    resultMap.put("result", "success");
+                    resultMap.put("list", resultList);
                     break;
                 }
+
+                page++;
+            }else {
+                log.error("네이버 주문 목록 페이지 변경중 오류 발생");
+                resultMap.put("result", "failure");
+                break;
             }
-        }catch(Exception e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-
-            String stackTraceStr = sw.toString();
-
-            log.error("----- Exception StackTrace -----\n{}", stackTraceStr);
-        }finally {
-            seleniumUtil.quitWebDriver(driver);
         }
 
         return resultMap;

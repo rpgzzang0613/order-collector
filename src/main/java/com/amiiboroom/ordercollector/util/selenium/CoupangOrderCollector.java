@@ -2,6 +2,7 @@ package com.amiiboroom.ordercollector.util.selenium;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.WebDriver;
 
 import java.util.HashMap;
 
@@ -9,7 +10,7 @@ import java.util.HashMap;
 @Slf4j
 public class CoupangOrderCollector implements OrderCollector {
 
-    private final SeleniumUtil seleniumUtil;
+    private final WebDriver driver;
 
     @Override
     public boolean login(HashMap<String, Object> requestMap) {
