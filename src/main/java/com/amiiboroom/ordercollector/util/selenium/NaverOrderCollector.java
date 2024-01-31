@@ -112,6 +112,10 @@ public class NaverOrderCollector implements OrderCollector {
 
         HashMap<String, Object> innerMap = (HashMap<String, Object>) outerMap.get("result");
 
+        if(innerMap.get("totalPage") != null && page == 1) {
+            resultMap.put("totalPage", innerMap.get("totalPage"));
+        }
+
         List<HashMap<String, Object>> itemList;
         if(innerMap.get("items") != null) {
             itemList = (List<HashMap<String, Object>>) innerMap.get("items");
