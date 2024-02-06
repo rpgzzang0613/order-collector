@@ -4,19 +4,15 @@ import com.amiiboroom.ordercollector.dto.BackendResult;
 import com.amiiboroom.ordercollector.util.enums.BackendMessage;
 import com.amiiboroom.ordercollector.util.enums.SiteType;
 import com.amiiboroom.ordercollector.util.selenium.*;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.time.Duration;
 import java.util.*;
 
 @Service
