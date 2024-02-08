@@ -128,16 +128,16 @@ public class AccountService {
             changedMap = encryptUtil.encryptMapValues(changedMap, keysToEncrypt);
         }
 
-        List<HashMap<String, Object>> beforeList = tbDao.TBS01(changedMap);
+        List<HashMap<String, Object>> menuList = tbDao.TBS01(changedMap);
 
-        List<HashMap<String, Object>> afterList;
-        if(beforeList == null) {
-            afterList = new ArrayList<>();
+        List<HashMap<String, Object>> bundledMenuList;
+        if(menuList == null) {
+            bundledMenuList = new ArrayList<>();
         }else {
-            afterList = bundleMenuList(beforeList);
+            bundledMenuList = bundleMenuList(menuList);
         }
 
-        return afterList;
+        return bundledMenuList;
     }
 
     /** 아래부턴 클래스 내부 사용 메소드 **/
@@ -148,40 +148,40 @@ public class AccountService {
         return changedMap;
     }
 
-    private List<HashMap<String, Object>> bundleMenuList(List<HashMap<String, Object>> beforeList) {
-        List<HashMap<String, Object>> afterList = new ArrayList<>();
-        HashMap<String, Object> map = null;
+    private List<HashMap<String, Object>> bundleMenuList(List<HashMap<String, Object>> menuList) {
+        List<HashMap<String, Object>> bundledMenuList = new ArrayList<>();
+        HashMap<String, Object> currentMenu = null;
         List<HashMap<String, Object>> subMenuList = null;
 
-        for(HashMap<String, Object> m : beforeList) {
-            int menuDepth = (int) m.get("menu_depth");
+        for(HashMap<String, Object> menu : menuList) {
+            int menuDepth = (int) menu.get("menu_depth");
 
             if(menuDepth == 1) {
-                if(map != null) {
-                    afterList.add(map);
+                if(currentMenu != null) {
+                    bundledMenuList.add(currentMenu);
                 }
 
-                map = new HashMap<>();
-                map.put("rno", m.get("rno"));
-                map.put("code", m.get("code"));
-                map.put("code_desc", m.get("code_desc"));
+                currentMenu = new HashMap<>();
+                currentMenu.put("rno", menu.get("rno"));
+                currentMenu.put("code", menu.get("code"));
+                currentMenu.put("code_desc", menu.get("code_desc"));
 
                 subMenuList = new ArrayList<>();
-                map.put("sub_menus", subMenuList);
+                currentMenu.put("sub_menus", subMenuList);
             }else if(menuDepth == 2 && subMenuList != null) {
                 HashMap<String, Object> subMenu = new HashMap<>();
-                subMenu.put("rno", m.get("rno"));
-                subMenu.put("code", m.get("code"));
-                subMenu.put("code_desc", m.get("code_desc"));
+                subMenu.put("rno", menu.get("rno"));
+                subMenu.put("code", menu.get("code"));
+                subMenu.put("code_desc", menu.get("code_desc"));
                 subMenuList.add(subMenu);
             }
         }
 
-        if(map != null) {
-            afterList.add(map);
+        if(currentMenu != null) {
+            bundledMenuList.add(currentMenu);
         }
 
-        return afterList;
+        return bundledMenuList;
     }
 
 }
