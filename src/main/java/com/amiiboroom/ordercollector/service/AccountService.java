@@ -3,14 +3,13 @@ package com.amiiboroom.ordercollector.service;
 import com.amiiboroom.ordercollector.dao.TADao;
 import com.amiiboroom.ordercollector.dao.TBDao;
 import com.amiiboroom.ordercollector.dto.BackendResult;
+import com.amiiboroom.ordercollector.util.CustomEncryptUtil;
 import com.amiiboroom.ordercollector.util.enums.BackendMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,8 +24,7 @@ public class AccountService {
 
     private final TADao taDao;
     private final TBDao tbDao;
-    private final StandardPBEStringEncryptor dataEncryptor;     // 양방향
-    private final PasswordEncoder passwordEncoder;              // 단방향
+    private final CustomEncryptUtil encryptUtil;
 
     @Value("${spring.profiles.active}")
     private String activatedProfile;
@@ -37,8 +35,8 @@ public class AccountService {
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
         if("real".equals(activatedProfile)) {
-            String[] keysToEncode = {"user_id", "user_name", "email"};
-            changedMap = encodeMapValues(changedMap, keysToEncode);
+            String[] keysToEncrypt = {"user_id", "user_name", "email"};
+            changedMap = encryptUtil.encryptMapValues(changedMap, keysToEncrypt);
         }
 
         HashMap<String, Object> checkMap = taDao.TAS01(changedMap);
@@ -57,8 +55,8 @@ public class AccountService {
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
         if("real".equals(activatedProfile)) {
-            String[] keysToEncode = {"user_id", "user_name", "email"};
-            changedMap = encodeMapValues(changedMap, keysToEncode);
+            String[] keysToEncrypt = {"user_id", "user_name", "email"};
+            changedMap = encryptUtil.encryptMapValues(changedMap, keysToEncrypt);
         }
 
         int res = taDao.TAI01(changedMap);
@@ -76,12 +74,17 @@ public class AccountService {
         BackendResult backendResult;
 
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
+        if("real".equals(activatedProfile)) {
+            String[] keysToEncrypt = {"user_id", "user_pw"};
+            changedMap = encryptUtil.encryptMapValues(changedMap, keysToEncrypt);
+        }
+
         HashMap<String, Object> userMap = taDao.TAS02(changedMap);
 
         if(userMap != null && !userMap.isEmpty()) {
             if("real".equals(activatedProfile)) {
-                String[] keysToDecode = {"user_id", "user_name", "email"};
-                userMap = decodeMapValues(userMap, keysToDecode);
+                String[] keysToDecrypt = {"user_id", "user_name", "email"};
+                userMap = encryptUtil.decryptMapValues(userMap, keysToDecrypt);
             }
 
             backendResult = new BackendResult(BackendMessage.SUCCESS, userMap);
@@ -98,8 +101,8 @@ public class AccountService {
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
         if("real".equals(activatedProfile)) {
-            String[] keysToEncode = {"user_id", "user_name", "email"};
-            changedMap = encodeMapValues(changedMap, keysToEncode);
+            String[] keysToEncrypt = {"user_id", "user_name", "email"};
+            changedMap = encryptUtil.encryptMapValues(changedMap, keysToEncrypt);
         }
 
         HashMap<String, Object> idMap = taDao.TAS03(changedMap);
@@ -121,8 +124,8 @@ public class AccountService {
         HashMap<String, Object> changedMap = changeKeyToUppercase(requestMap);
 
         if("real".equals(activatedProfile)) {
-            String[] keysToEncode = {"user_id", "user_name", "email"};
-            changedMap = encodeMapValues(changedMap, keysToEncode);
+            String[] keysToEncrypt = {"user_id", "user_name", "email"};
+            changedMap = encryptUtil.encryptMapValues(changedMap, keysToEncrypt);
         }
 
         List<HashMap<String, Object>> beforeList = tbDao.TBS01(changedMap);
@@ -143,36 +146,6 @@ public class AccountService {
         map.forEach((k, v) -> changedMap.put(k.toUpperCase(), v));
 
         return changedMap;
-    }
-
-    private HashMap<String, Object> encodeMapValues(HashMap<String, Object> map, String[] keysToEncode) {
-        HashMap<String, Object> encodedMap = new HashMap<>(map);
-
-        encodedMap.forEach((k, v) -> {
-            boolean isEncodeValue = Arrays.stream(keysToEncode).anyMatch(k2 -> k2.equalsIgnoreCase(k));
-
-            if("user_pw".equalsIgnoreCase(k) && v != null && !v.toString().isEmpty()) {
-                encodedMap.put(k, passwordEncoder.encode(v.toString()));
-            }else if(isEncodeValue && v != null && !v.toString().isEmpty()) {
-                encodedMap.put(k, dataEncryptor.encrypt(v.toString()));
-            }
-        });
-
-        return encodedMap;
-    }
-
-    private HashMap<String, Object> decodeMapValues(HashMap<String, Object> map, String[] keysToDecode) {
-        HashMap<String, Object> decodedMap = new HashMap<>(map);
-
-        decodedMap.forEach((k, v) -> {
-            boolean isDecodeValue = Arrays.stream(keysToDecode).anyMatch(k2 -> k2.equalsIgnoreCase(k));
-
-            if(isDecodeValue && v != null && !v.toString().isEmpty()) {
-                decodedMap.put(k, dataEncryptor.decrypt(v.toString()));
-            }
-        });
-
-        return decodedMap;
     }
 
     private List<HashMap<String, Object>> bundleMenuList(List<HashMap<String, Object>> beforeList) {
