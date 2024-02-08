@@ -3,7 +3,7 @@ package com.amiiboroom.ordercollector.service;
 import com.amiiboroom.ordercollector.dto.BackendResult;
 import com.amiiboroom.ordercollector.util.enums.BackendMessage;
 import com.amiiboroom.ordercollector.util.enums.SiteType;
-import com.amiiboroom.ordercollector.util.webscraping.*;
+import com.amiiboroom.ordercollector.util.webscraping.SeleniumUtil;
 import com.amiiboroom.ordercollector.util.webscraping.collector.OrderCollector;
 import com.amiiboroom.ordercollector.util.webscraping.factory.OrderCollectorFactory;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +65,7 @@ public class OrderService {
 
             if(resultMap.get("result") == null || "failure".equals(resultMap.get("result"))) {
                 // 페이지 조회 도중 실패한 경우
-                backendResult = new BackendResult(BackendMessage.FAILED_TO_CRAWLING, null);
+                backendResult = new BackendResult(BackendMessage.FAILED_TO_SCRAPING, null);
                 return ResponseEntity.ok(backendResult);
             }
 
