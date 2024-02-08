@@ -48,7 +48,7 @@ public class OrderController {
      */
     @GetMapping("/web/{site}")
     @ResponseBody
-    public ResponseEntity<BackendResult> getNaverOrderListFromWeb(@PathVariable String site, @RequestParam HashMap<String, Object> requestMap) throws InterruptedException, JsonProcessingException {
+    public ResponseEntity<BackendResult> getNaverOrderListFromWeb(@PathVariable String site, @RequestParam HashMap<String, Object> requestMap) {
         boolean isValid = validateSite(site);
 
         if(!isValid) {

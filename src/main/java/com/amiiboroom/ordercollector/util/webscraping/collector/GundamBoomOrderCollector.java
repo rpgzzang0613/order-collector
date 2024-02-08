@@ -1,4 +1,4 @@
-package com.amiiboroom.ordercollector.util.selenium;
+package com.amiiboroom.ordercollector.util.webscraping.collector;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SofranoMallOrderCollector implements OrderCollector {
+public class GundamBoomOrderCollector implements OrderCollector {
 
     private final WebDriver driver;
 

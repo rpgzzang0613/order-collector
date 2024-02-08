@@ -1,6 +1,7 @@
-package com.amiiboroom.ordercollector.util.selenium;
+package com.amiiboroom.ordercollector.util.webscraping.factory;
 
 import com.amiiboroom.ordercollector.util.enums.SiteType;
+import com.amiiboroom.ordercollector.util.webscraping.collector.*;
 import org.openqa.selenium.WebDriver;
 
 public class OrderCollectorFactory {

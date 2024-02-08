@@ -1,4 +1,4 @@
-package com.amiiboroom.ordercollector.util.selenium;
+package com.amiiboroom.ordercollector.util.webscraping;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;

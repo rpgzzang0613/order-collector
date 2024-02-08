@@ -1,4 +1,4 @@
-package com.amiiboroom.ordercollector.util.selenium;
+package com.amiiboroom.ordercollector.util.webscraping.collector;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
