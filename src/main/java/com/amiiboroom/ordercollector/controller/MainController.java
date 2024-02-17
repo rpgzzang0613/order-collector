@@ -22,7 +22,7 @@ public class MainController {
     public String indexPage(HttpSession session) {
         String urlPath = "redirect:/accounts/login";
 
-        HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");//test
+        HashMap<String, Object> user = (HashMap<String, Object>) session.getAttribute("user");
         if(user != null && !user.isEmpty()) {
             urlPath = "redirect:/dashboard";
         }
