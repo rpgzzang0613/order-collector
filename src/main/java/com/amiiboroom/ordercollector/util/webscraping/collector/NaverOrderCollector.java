@@ -37,8 +37,8 @@ public class NaverOrderCollector implements OrderCollector {
         Thread.sleep(13000);
 
         try {
-            WebElement button = driver.findElement(By.cssSelector("#account")).findElement(By.cssSelector("[class*='btn_logout']"));
-            if(button != null && button.getText().equals("로그아웃")) {
+            WebElement logoutBtn = driver.findElement(By.cssSelector("#account")).findElement(By.cssSelector("[class*='btn_logout']"));
+            if(logoutBtn != null && logoutBtn.getText().equals("로그아웃")) {
                 isLoggedIn = true;
             }
         }catch(NoSuchElementException e) {

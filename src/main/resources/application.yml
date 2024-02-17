@@ -1,13 +1,13 @@
 #common config
 spring:
   profiles:
-    active: local
-#    active: test
-#    active: real
+    active: local-group
+#    active: test-group
+#    active: real-group
     group:
-      local: local, local_secret
-      test: test, test_secret
-      real: real, real_secret
+      local-group: local, local_secret
+      test-group: test, test_secret
+      real-group: real, real_secret
   datasource:
     driver-class-name: org.postgresql.Driver
   devtools:
