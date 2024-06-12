@@ -4,7 +4,6 @@ import com.amiiboroom.ordercollector.dto.BackendResult;
 import com.amiiboroom.ordercollector.service.OrderService;
 import com.amiiboroom.ordercollector.util.enums.BackendMessage;
 import com.amiiboroom.ordercollector.util.enums.SiteType;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class OrderController {
      */
     @GetMapping("/db/{site}")
     @ResponseBody
-    public ResponseEntity<BackendResult> getNaverOrderListFromDB(@PathVariable String site, @RequestParam HashMap<String, Object> requestMap) {
+    public ResponseEntity<BackendResult> getOrderListFromDB(@PathVariable String site, @RequestParam HashMap<String, Object> requestMap) {
         boolean isValid = validateSite(site);
 
         if(!isValid) {
@@ -48,7 +47,7 @@ public class OrderController {
      */
     @GetMapping("/web/{site}")
     @ResponseBody
-    public ResponseEntity<BackendResult> getNaverOrderListFromWeb(@PathVariable String site, @RequestParam HashMap<String, Object> requestMap) {
+    public ResponseEntity<BackendResult> getOrderListFromWeb(@PathVariable String site, @RequestParam HashMap<String, Object> requestMap) {
         boolean isValid = validateSite(site);
 
         if(!isValid) {
